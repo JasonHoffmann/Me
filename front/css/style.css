@@ -1,0 +1,102 @@
+#me-plugin {
+	background: #FEFEFE;
+	font-family: 'Open Sans', sans-serif;
+}
+
+#me-plugin h1, #me-plugin h2, #me-plugin h3, #me-plugin h4, #me-plugin h5, #me-plugin h6 {
+	font-family: 'Open Sans', sans-serif;
+}
+
+#me-plugin:before {
+	background: none;
+	box-shadow: none;
+	min-height: auto;
+	height: auto;
+	width: auto;
+}
+
+#me-plugin .body {
+	max-width: 90%;
+	margin: 0 auto;
+}
+
+#me-plugin .btn {
+	border: 2px solid #EF7B7B;
+	border-radius: 10px;
+	color: #EF7B7B;
+	padding: 1em;
+	display: inline-block;
+	text-transform: uppercase;
+	transition: all .15s;
+}
+
+#me-plugin .btn:hover, #me-plugin .btn:focus {
+	background: #EF7B7B;
+	color: white;
+}
+
+#me-plugin .no-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+
+
+#me-plugin .module-header {
+	text-align: center;
+	font-size: 36px;
+	font-weight: 300;
+	text-transform: uppercase;
+	color: #EF7B7B;
+}
+
+#me-plugin .module-header .module-header-slash {
+	font-size: 46px;
+	position: relative;
+	top: 5px;
+}
+
+#me-plugin .module-list {
+	text-align: center;
+	list-style-type: none;
+}
+
+#me-plugin .module-list-item {
+	display: block;
+	margin: 2em 0;
+}
+
+#me-plugin .module-list-link {
+	min-width: 15em;
+	font-size: 18px;
+}
+
+#me-plugin .notes-list {
+	margin-top: 3em;
+}
+
+#me-plugin .notes-item {
+	max-width: 40em;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 1em;
+	margin-top: 2em;
+}
+
+#me-plugin .notes-list-buttons .btn {
+	font-size: 12px;
+	padding: 3px 1em;
+	border-width: 1px;
+	border-radius: 2px;
+	margin-right: 10px;
+}
+
+#me-plugin .notes-list-title {
+	margin-top: 10px;
+	margin-bottom: 0;
+	font-size: 24px;
+}
+
+#me-plugin .notes-list-excerpt p {
+	margin-top: 0;
+	font-size: 16px;
+}

@@ -1,0 +1,27 @@
+.me-modules {
+	width: 90%;
+	font-size: 18px;
+	margin: 2em 0;
+}
+
+.me-module {
+	display: block;
+	padding: 1em;
+	background: #FCFCFC;
+	border-bottom: 1px solid #eee;
+	position: relative;
+}
+
+.me-module_name h4 {
+	margin: 10px 0 0 0;
+}
+
+.me-module.active {
+	background: #fff;
+}
+
+.me-module_actions {
+	position: absolute;
+	right: 20px;
+	bottom: 15px;
+}
