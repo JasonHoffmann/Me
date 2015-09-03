@@ -32,21 +32,38 @@
 
 <script type="text/template" id="notes-list">
 	<div class="notes-list-buttons">
-		<a class="btn" href="#">View</a>
-		<a class="btn" href="#">Edit</a>
+		<a class="btn js-view" href="#">View</a>
+		<a class="btn js-edit" href="#">Edit</a>
 	</div>
 	<div class="notes-list-content">
-		<% content.rendered = content.rendered.substring(0, 100); %>
+		<% // TODO: Find a better way to truncate this %>
 		<h3 class="notes-list-title"><%= title.rendered %></h3>
-		<div class="notes-list-excerpt"><%= content.rendered %></div>
+		<div class="notes-list-excerpt"><%= excerpt.rendered %></div>
+	</div>
+</script>
+<script type="text/template" id="notes-show">
+	<div class="notes-show-main">
+		<h3 class="notes-show-title"><%= title.rendered %></h3>
+		<div class="notes-show-content"><%= content.rendered %></div>
+	</div>
+</script>
+<script type="text/template" id="notes-edit">
+	<div class="notes-edit-main">
+		<h3 class="notes-edit-title"><%= title.rendered %></h3>
+		<textarea class="notes-editor js-editor">
+		<%= content.rendered %>
+		</textarea>
+		<div class="notes-edit-actions">
+			<a href="#" class="notes-edit-button btn js-save">Save</a>
+		</div>
 	</div>
 </script>
 <script type="text/template" id="notes-tags-list">
-	<%- name %>
+	<a href="#" class="notes-tags-link js-tag"><%- name %></a>
 </script>
 <script type="text/template" id="layout-template">
-	<div id="sidebar"></div>
-	<div id="main"></div>
+	<div id="side" class="me-sidebar"></div>
+	<div id="main" class="me-main"></div>
 </script>
 </body>
 

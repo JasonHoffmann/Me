@@ -24,6 +24,9 @@ class Me_Notes {
 
 		add_action( 'init', array( $this, 'add_notes_to_rest_api' ) );
 
+		add_filter('rest_prepare_me_note', array( $this, 'add_fields_to_response' ), 10, 3);
+
+		add_filter( 'excerpt_more', array( $this, 'filter_notes_excerpt' ), 999 );
 
 	}
 
@@ -58,9 +61,9 @@ class Me_Notes {
 			'labels'                     => $labels,
 			'hierarchical'               => false,
 			'public'                     => true,
-			'show_ui'                    => false,
-			'show_admin_column'          => false,
-			'show_in_nav_menus'          => false,
+			'show_ui'                    => true,
+			'show_admin_column'          => true,
+			'show_in_nav_menus'          => true,
 			'show_tagcloud'              => false,
 		);
 		register_taxonomy( 'me_note_tags', array( 'me_note' ), $args );
@@ -91,7 +94,8 @@ class Me_Notes {
 			'label'               => __( 'Note', 'text_domain' ),
 			'description'         => __( 'A list of notes', 'text_domain' ),
 			'labels'              => $labels,
-			'supports'            => array( 'title', 'editor', 'custom-fields' ),
+			'supports'            => array( 'title', 'editor', 'custom-fields', 'excerpt' ),
+			'taxonomies'		  => array( 'me_note_tags' ),
 			'hierarchical'        => false,
 			'public'              => true,
 			'show_ui'             => true,
@@ -107,6 +111,21 @@ class Me_Notes {
 		);
 
 		register_post_type( 'me_note', $args );
+	}
+
+	function add_fields_to_response( $data, $post, $request ) {
+		$tags = wp_get_post_terms($post->ID, 'me_note_tags', array('fields' => 'names'));
+		$data->data['tags'] = $tags;
+
+		return $data;
+	}
+
+	function filter_notes_excerpt( $more ) {
+		global $post;
+		if($post->post_type === 'me_note') {
+			return '';
+		}
+ 		
 	}
 
 }

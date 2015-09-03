@@ -76,6 +76,7 @@ class Me {
 
 		add_action( 'init', array( $this, 'handle_rewrites' ) );
 		add_filter('template_redirect', array( $this, 'me_redirect') );
+
 	}
 
 
@@ -120,11 +121,18 @@ class Me {
 	 * 
 	 */
 	function load_all_scripts() {
+
+		// TODO: Enqueue these only on the pages that need them (check for me query var)
+
 		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
+		wp_enqueue_style( 'tbw_editor_style', ME__PLUGIN_URL . 'front/css/lib/trumbowyg.min.css' );
 
 		wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
+		wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
 
 		wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
+
 		wp_localize_script( 'me_script', 'me_vars', array(
 			'active_modules' => Me::localize_modules(),
 			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/'
