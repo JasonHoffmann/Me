@@ -14,6 +14,10 @@ Me.on('before:start', function(){
 	});
 
 	Me.regions = new RegionContainer();
+
+	var headerView = new Me.App.Views.HeaderView();
+	Me.regions.header.show(headerView);
+
 });
 
 Me.on('start', function(){
@@ -57,7 +61,6 @@ Me.module("App.Entities", function(Entities, ContactManager, Backbone, Marionett
         items = collection.models;
       }
 
-      // store current criterion
       filtered._currentCriterion = criterion;
 
       return items;
@@ -67,7 +70,6 @@ Me.module("App.Entities", function(Entities, ContactManager, Backbone, Marionett
       filtered._currentFilter = "filter";
       var items = applyFilter(filterCriterion, "filter");
 
-      // reset the filtered collection with the new items
       filtered.reset(items);
       return filtered;
     };
@@ -76,26 +78,16 @@ Me.module("App.Entities", function(Entities, ContactManager, Backbone, Marionett
       filtered._currentFilter = "where";
       var items = applyFilter(filterCriterion, "where");
 
-      // reset the filtered collection with the new items
       filtered.reset(items);
       return filtered;
     };
 
-    // when the original collection is reset,
-    // the filtered collection will re-filter itself
-    // and end up with the new filtered result set
     original.on("reset", function(){
       var items = applyFilter(filtered._currentCriterion, filtered._currentFilter);
 
-      // reset the filtered collection with the new items
       filtered.reset(items);
     });
 
-    // if the original collection gets models added to it:
-    // 1. create a new collection
-    // 2. filter it
-    // 3. add the filtered models (i.e. the models that were added *and*
-    //     match the filtering criterion) to the `filtered` collection
     original.on("add", function(models){
       var coll = new original.constructor();
       coll.add(models);
@@ -112,7 +104,9 @@ Me.module('App', function(App, Me, Backbone, Marionette, $, _){
 		appRoutes: {
 			'' : 'listIndex',
 			'notes(/)' : 'listNotes',
-			'notes/:id(/)' : 'showNote'
+			'notes/new(/)' : 'newNote',
+			'notes/:id(/)' : 'showNote',
+			'notes/:id/edit(/)' : 'editNote'
 		}
 	});
 
@@ -125,8 +119,16 @@ Me.module('App', function(App, Me, Backbone, Marionette, $, _){
 			Me.Notes.Controller.list();
 		},
 
+		newNote: function() {
+			Me.Notes.Controller.new();
+		},
+
 		showNote: function(id) {
 			Me.Notes.Controller.show(id);
+		},
+
+		editNote: function(id) {
+			Me.Notes.Controller.edit(id);
 		}
 	}
 
@@ -137,6 +139,16 @@ Me.module('App', function(App, Me, Backbone, Marionette, $, _){
 	});
 });
 
+Me.module('App.Views', function(Views, Me, Backbone, Marionette, $, _){
+
+	Views.HeaderView = Marionette.ItemView.extend({
+		tagName: 'h2',
+		className: 'module-header',
+		template: '#main-header'
+	});
+
+});
+
 
 Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 	Entities.Note = wp.api.models.Post.extend({
@@ -145,7 +157,13 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 		defaults: {
 			id: null,
 			type: 'me_note',
-			status: 'publish'
+			status: 'publish',
+			title: {
+				rendered: 'New Note'
+			},
+			content: {
+				rendered: ''
+			}
 		},
 
 		urlRoot: WP_API_Settings.root + '/wp/v2/me_notes'
@@ -190,19 +208,23 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 		return promise;
 	}
 
-	getNote = function(id) {
-		var note = new Entities.Note({
-			id: id
-		});
-		var defer = $.Deferred();
-		note.fetch({
-			success: function(data) {
-				defer.resolve(data);
-			}
-		});
+	getNote = function(entity) {
+		if(entity.id) {
+			return entity
+		} else {
+			var note = new Entities.Note({
+				id: entity
+			});
+			var defer = $.Deferred();
+			note.fetch({
+				success: function(data) {
+					defer.resolve(data);
+				}
+			});
 
-		var promise = defer.promise()
-		return promise;
+			var promise = defer.promise()
+			return promise;
+		}
 	}
 
 	Me.reqres.setHandler('notes:entities', function() {
@@ -218,100 +240,138 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 	})
 });
 
-Me.module('Notes', function(Notes, Me, Backbone, Marionette, $, _){
-	Notes.Controller = {
-		list: function(){
-			var layout = new Me.Notes.Views.MainView();
-			Me.regions.main.show(layout);
+Me.module('Notes.Controller', function(Controller, Me, Backbone, Marionette, $, _){
+	Controller.on('note:show', function(note) {
+		Backbone.history.navigate('notes/' + note.get('id').toString());
 
-			var fetchingNotes = Me.request("notes:entities");
-			$.when(fetchingNotes).done(function(notes) {
-				var filteredNotes = Me.App.Entities.FilteredCollection({
-					collection: notes,
+		if(!note.get('title').rendered) {
+			note.set({title : { rendered: note.get('title') } });
+		}
+		if(!note.get('content').rendered) {
+			note.set({content : { rendered: note.get('content') } });
+		}
 
-					filterFunction: function(tag) {
-						return function(note) {
-							if(note.get('tags').indexOf(tag) !== -1) {
-								return note;
-							} else {
+		Controller.show(note);
+	});
+
+	Controller.on('note:new', function(note) {
+		Backbone.history.navigate('notes/new');
+		Controller.new();
+	})
+
+	Controller.on('note:list', function() {
+		Backbone.history.navigate('notes');
+		Controller.list();
+	})
+
+	Controller.on('note:edit', function(note) {
+		Backbone.history.navigate('notes/' + note.get('id').toString() + '/edit');
+		Controller.edit(note);
+	});
+
+	Controller.list = function() {
+				var layout = new Me.Notes.Views.MainView();
+				Me.regions.main.show(layout);
+
+				var fetchingNotes = Me.request("notes:entities");
+				$.when(fetchingNotes).done(function(notes) {
+					var filteredNotes = Me.App.Entities.FilteredCollection({
+						collection: notes,
+
+						filterFunction: function(tag) {
+							return function(note) {
+								if(note.get('tags').indexOf(tag) !== -1) {
+									return note;
+								} else {
+								}
 							}
 						}
-					}
+					});
+
+					var notesView = new Me.Notes.Views.Notes({
+		  				collection: filteredNotes
+					});
+
+					layout.content.show(notesView);
+
+					layout.on('note:new', function() {
+						Controller.trigger('note:new');
+					})
+
+					notesView.on('childview:note:show', function(childView, note) {
+						Controller.trigger('note:show', note);
+					});
+
+					notesView.on('childview:note:edit', function(childView, note) {
+						Controller.trigger('note:edit', note);
+					});
+
+					Me.vent.on('notes:filter', function(tag) {
+						filteredNotes.filter(tag);
+					});
+
+					Me.vent.on('notes:clear', function() {
+						filteredNotes.filter('');
+					});
+
 				});
 
-				var notesView = new Notes.Views.Notes({
-	  				collection: filteredNotes
+
+				var tags = Me.request('notes:tags:entities');
+				var tagsView = new Me.Notes.Views.Tags({
+					collection: tags
 				});
 
-				layout.content.show(notesView);
+				layout.sidebar.show(tagsView);
+	}
 
-				notesView.on('childview:note:show', function(childView, note) {
-					Backbone.history.navigate('notes/' + note.get('id').toString());
-					Notes.Controller.show(note);
-				});
+	Controller.show = function(model) {
+		
+		var note = Me.request('note:entity', model);
 
-				notesView.on('childview:note:edit', function(childView, note) {
-					Notes.Controller.edit(note);
-				})
-
-				Me.vent.on('notes:filter', function(tag) {
-					filteredNotes.filter(tag);
-				});
-
-				Me.vent.on('notes:clear', function() {
-					filteredNotes.filter('');
-				})
+		$.when(note).done(function(note) {
+			var noteView = new Me.Notes.Views.Note({
+				model: note
 			});
 
-
-			var tags = Me.request('notes:tags:entities');
-			var tagsView = new Notes.Views.Tags({
-				collection: tags
+			noteView.on('note:edit', function(model) {
+				Controller.trigger('note:edit', model)
 			});
 
-			layout.sidebar.show(tagsView);
-		},
+			Me.regions.main.show(noteView);
+		});	
+	}
 
-		show: function(model) {
-			if(model.attributes) {
-				var noteView = new Notes.Views.Note({
-					model: model
-				});
-				Me.regions.main.show(noteView);
-			} else {
-				var note = Me.request('note:entity', model);
-				$.when(note).done(function(note) {
-					console.log(note);
-					var noteView = new Notes.Views.Note({
-						model: note
-					});
-					Me.regions.main.show(noteView);
-				});
-			}
-			
-		},
+	Controller.edit = function(model) {
+		var note = Me.request('note:entity', model);
 
-		edit: function(model) {
-			if(model.attributes) {
-				var noteView = new Notes.Views.EditNote({
-					model: model
-				});
-				Me.regions.main.show(noteView);
+		$.when(note).done(function(note) {
+			var noteView = new Me.Notes.Views.EditNote({
+				model: note
+			});
+			Me.regions.main.show(noteView);
+			noteView.on('note:save', function(data) {
+				if(note.save(data)) {
+					Controller.trigger('note:show', note);
+				}
+			})
+		});
+	}
 
-				noteView.on('note:save', function(model) {
-					console.log(model);
-				})
-			} else {
-				var note = Me.request('note:entity', model);
-				$.when(note).done(function(note) {
-					var noteView = new Notes.Views.EditNote({
-						model: note
-					});
-					Me.regions.main.show(noteView);
-				});
-			}
+	Controller.new = function() {
+		var model = new Me.Notes.Entities.Note();
+		var noteView = new Me.Notes.Views.NewNote({
+			model: model
+		});
 
-		}
+		noteView.on('note:new', function(data) {
+			if(model.save(data)) {
+				console.log("new note");
+				// Controller.trigger('note:new', model)
+			};
+		})
+
+		Me.regions.main.show(noteView);
 	}
 });
 
@@ -325,6 +385,15 @@ Me.module('Notes.Views', function(Views, Me, Backbone, Marionette, $, _) {
 		regions: {
 			sidebar: '#side',
 			content: '#main'
+		},
+
+		events: {
+			'click .js-new' : 'newNote'
+		},
+
+		newNote: function(e) {
+			e.preventDefault();
+			this.trigger('note:new');
 		}
 	});
 
@@ -355,44 +424,23 @@ Me.module('Notes.Views', function(Views, Me, Backbone, Marionette, $, _) {
 		childView: Views.NotesItem
 	});
 
-	Views.Note = Marionette.ItemView.extend({
-		tagName: 'div',
-		className: 'notes-show',
-		template: '#notes-show'
-	});
-
-	Views.EditNote = Marionette.ItemView.extend({
-		tagName: 'div',
-		className: 'notes-edit',
-		template: '#notes-edit',
-
-		events: {
-			'click .js-save' : 'saveNote'
-		},
-
-		saveNote: function(e) {
-			e.preventDefault();
-			this.trigger('note:save', this.model);
-		},
-
-		onShow: function() {
-			var $textEditor = this.$el.find('.js-editor');
-			var content = this.model.get('content');
-			$textEditor.trumbowyg();
-		}
-	});
-
 	Views.TagItem = Marionette.ItemView.extend({
 		tagName: 'li',
 		className: 'notes-tags-item',
 		template: '#notes-tags-list',
 
 		events: {
-			'click .js-tag' : 'filterNotes'
+			'click .js-tag' : 'filterNotes'		
 		},
 
 		filterNotes: function(e) {
 			e.preventDefault();
+			if(this.$el.hasClass('is-active')) {
+				return;
+			} else {
+				$('.notes-tags-list li.is-active').removeClass('is-active');
+				this.$el.addClass('is-active');
+			}
 			var tag = this.model.get('name');
 			Me.vent.trigger('notes:filter', tag);
 		}
@@ -408,14 +456,103 @@ Me.module('Notes.Views', function(Views, Me, Backbone, Marionette, $, _) {
 		},
 
 		onShow: function() {
-			this.$el.prepend('<li class="notes-tags-item"><a href="#" class="notes-tags-link js-tag-all">All Tags</a></li>');
+			this.$el.prepend('<li class="notes-tags-item is-active js-tag-all"><a href="#" class="notes-tags-link">All Tags</a></li>');
 		},
 
 		resetNotes: function(e) {
 			e.preventDefault();
+			if(this.$el.hasClass('is-active')) {
+				return;
+			} else {
+				$('.notes-tags-list li.is-active').removeClass('is-active');
+				this.$el.find('.js-tag-all').addClass('is-active');
+			}
 			Me.vent.trigger('notes:clear');
 		}
-	})
+	});
+
+	Views.Note = Marionette.ItemView.extend({
+		tagName: 'div',
+		className: 'note-container',
+		template: '#notes-show',
+
+		events: {
+			'click .js-edit' : 'editNote',
+			'click .js-back' : 'goBack'
+		},
+
+		editNote: function(e) {
+			e.preventDefault();
+			this.trigger('note:edit', this.model);
+		},
+
+		goBack: function(e) {
+			e.preventDefault();
+			Me.Notes.Controller.trigger('note:list');
+		}
+	});
+
+	Views.EditNote = Marionette.ItemView.extend({
+		tagName: 'div',
+		className: 'note-container',
+		template: '#notes-edit',
+
+		events: {
+			'click .js-save' : 'saveNote',
+			'click .js-back' : 'goBack'
+		},
+
+		saveNote: function(e) {
+			e.preventDefault();
+			var data = Backbone.Syphon.serialize(this);
+			this.trigger('note:save', data);
+		},
+
+		goBack: function(e) {
+			e.preventDefault();
+			Me.Notes.Controller.trigger('note:list');
+		},
+
+		onShow: function() {
+			var $textEditor = this.$el.find('.js-editor');
+			$textEditor.trumbowyg();
+
+			var $input = this.$el.find('.note-edit-title');
+			var size = $input.val().length;
+			$input.attr('size', size);
+		}
+	});
+
+	Views.NewNote = Marionette.ItemView.extend({
+		tagName: 'div',
+		className: 'note-container',
+		template: '#notes-edit',
+
+		events: {
+			'click .js-save' : 'saveNote',
+			'click .js-back' : 'goBack'
+		},
+
+		saveNote: function(e) {
+			e.preventDefault();
+			var data = Backbone.Syphon.serialize(this);
+			this.trigger('note:new', data);
+		},
+
+		goBack: function(e) {
+			e.preventDefault();
+
+			//TODO: CHECK BEFORE DESTROYING MODEL
+			this.model.destroy();
+
+			Me.Notes.Controller.trigger('note:list');
+		},
+
+		onShow: function() {
+			var $textEditor = this.$el.find('.js-editor');
+			$textEditor.trumbowyg();
+		}
+	});
 });
 
 
@@ -497,12 +634,6 @@ Me.module('Module', function(Module, Me, Backbone, Marionette, $, _) {
 		className: 'module-list',
 		childView: Module.ModuleView
 	});
-
-	Module.HeaderView = Marionette.ItemView.extend({
-		tagName: 'h2',
-		className: 'module-header',
-		template: '#main-header'
-	});
 });
 
 Me.module('Module', function(Module, Me, Backbone, Marionette, $, _) {
@@ -515,9 +646,6 @@ Me.module('Module', function(Module, Me, Backbone, Marionette, $, _) {
 			});
 
 			Me.regions.main.show(modulesView);
-
-			var headerView = new Module.HeaderView();
-			Me.regions.header.show(headerView);
 
 			modulesView.on('childview:module:show', function(childView, model){
 				Module.Controller.showModule(model);

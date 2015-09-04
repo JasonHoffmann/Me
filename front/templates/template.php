@@ -31,39 +31,64 @@
 </script>
 
 <script type="text/template" id="notes-list">
-	<div class="notes-list-buttons">
-		<a class="btn js-view" href="#">View</a>
-		<a class="btn js-edit" href="#">Edit</a>
-	</div>
 	<div class="notes-list-content">
-		<% // TODO: Find a better way to truncate this %>
-		<h3 class="notes-list-title"><%= title.rendered %></h3>
+		<div class="notes-list-buttons">
+			<a class="btn js-edit" href="#">Edit</a>
+			<a class="btn js-trash" href="#">Delete</a>
+		</div>
+		<h3 class="notes-list-title">
+			<a href="#" class="js-view">
+				<%= title.rendered %>
+			</a>
+		</h3>
 		<div class="notes-list-excerpt"><%= excerpt.rendered %></div>
 	</div>
 </script>
 <script type="text/template" id="notes-show">
-	<div class="notes-show-main">
-		<h3 class="notes-show-title"><%= title.rendered %></h3>
+<a href="#" class="js-back note-back">Back to Notes</a>
+	<div class="note-header">
+		<h3 class="note-title">
+			<%= title.rendered %>
+		</h3>
+		<div class="note-show-actions">
+			<a href="#" class="btn js-edit note-show-edit">Edit</a>
+		</div>
+	</div>
+	<ul class="no-list note-tags">
+		<% _.each(tags, function(tag) { %>
+			<li class="note-tags-item"><%= tag %></li>
+		<% }); %>
+	</ul>
 		<div class="notes-show-content"><%= content.rendered %></div>
 	</div>
 </script>
 <script type="text/template" id="notes-edit">
-	<div class="notes-edit-main">
-		<h3 class="notes-edit-title"><%= title.rendered %></h3>
-		<textarea class="notes-editor js-editor">
-		<%= content.rendered %>
-		</textarea>
-		<div class="notes-edit-actions">
-			<a href="#" class="notes-edit-button btn js-save">Save</a>
+<a href="#" class="js-back note-back">Back to Notes</a>
+<form>
+	<div class="note-header">
+		<input name="title" class="note-title note-edit-title" value="<%= title.rendered %>">
+
+		<div class="note-show-actions">
+			<a href="#" class="btn js-save note-show-edit">Save</a>
 		</div>
 	</div>
+	<textarea name="content" class="note-editor js-editor">
+		<%= content.rendered %>
+	</textarea>
+</form>
+
 </script>
 <script type="text/template" id="notes-tags-list">
 	<a href="#" class="notes-tags-link js-tag"><%- name %></a>
 </script>
 <script type="text/template" id="layout-template">
 	<div id="side" class="me-sidebar"></div>
-	<div id="main" class="me-main"></div>
+	<div class="me-main">
+		<div class="notes-item notes-list-actions">
+			<a href="#" class="btn notes-new js-new">+ New Note</a>
+		</div>
+		<div id="main"></div>
+	</div>
 </script>
 </body>
 

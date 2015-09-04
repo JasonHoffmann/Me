@@ -130,6 +130,7 @@ class Me {
 		wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
 		wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
 		wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		wp_enqueue_script( 'backbone.syphon', ME__PLUGIN_URL . 'front/js/lib/backbone.syphon.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
 
 		wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
 
