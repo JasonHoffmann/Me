@@ -104,7 +104,6 @@ Me.module('App', function(App, Me, Backbone, Marionette, $, _){
 		appRoutes: {
 			'' : 'listIndex',
 			'notes(/)' : 'listNotes',
-			'notes/new(/)' : 'newNote',
 			'notes/:id(/)' : 'showNote',
 			'notes/:id/edit(/)' : 'editNote'
 		}
@@ -117,10 +116,6 @@ Me.module('App', function(App, Me, Backbone, Marionette, $, _){
 
 		listNotes: function() {
 			Me.Notes.Controller.list();
-		},
-
-		newNote: function() {
-			Me.Notes.Controller.new();
 		},
 
 		showNote: function(id) {
@@ -196,16 +191,20 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 	}
 
 	getNotes = function() {
-		var notes = new Entities.NoteCollection();
-		var defer = $.Deferred();
-		notes.fetch({
-			success: function(data) {
-				defer.resolve(data);
-			},
-			cache: true
-		});
-		var promise = defer.promise();
-		return promise;
+		if(Me.Notes.Collection.list.length > 1) {
+			return Me.Notes.Collection.list);
+		} else {
+			var notes = new Entities.NoteCollection();
+			var defer = $.Deferred();
+			notes.fetch({
+				success: function(data) {
+					defer.resolve(data);
+				},
+				remove: false
+			});
+			var promise = defer.promise();
+			return promise;
+		}
 	}
 
 	getNote = function(entity) {
@@ -238,6 +237,10 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 	Me.reqres.setHandler('note:entity', function(id) {
 		return getNote(id)
 	})
+});
+
+Me.module('Notes.Collection', function(Collection, Me, Backbone, Marionette, $, _){
+	Collection.list = [];
 });
 
 Me.module('Notes.Controller', function(Controller, Me, Backbone, Marionette, $, _){
@@ -288,6 +291,9 @@ Me.module('Notes.Controller', function(Controller, Me, Backbone, Marionette, $, 
 						}
 					});
 
+					console.log('SECOND');
+					console.log(filteredNotes);
+
 					var notesView = new Me.Notes.Views.Notes({
 		  				collection: filteredNotes
 					});
@@ -295,7 +301,20 @@ Me.module('Notes.Controller', function(Controller, Me, Backbone, Marionette, $, 
 					layout.content.show(notesView);
 
 					layout.on('note:new', function() {
-						Controller.trigger('note:new');
+						var model = new Me.Notes.Entities.Note();
+						var noteView = new Me.Notes.Views.NewNote({
+							model: model
+						});
+
+						Me.regions.main.show(noteView);
+
+						noteView.on('note:new', function(data) {
+							if(notes.create(data)) {
+								console.log('FIRST');
+								console.log(filteredNotes);
+								Controller.list();
+							};
+						})
 					})
 
 					notesView.on('childview:note:show', function(childView, note) {
@@ -359,17 +378,6 @@ Me.module('Notes.Controller', function(Controller, Me, Backbone, Marionette, $, 
 	}
 
 	Controller.new = function() {
-		var model = new Me.Notes.Entities.Note();
-		var noteView = new Me.Notes.Views.NewNote({
-			model: model
-		});
-
-		noteView.on('note:new', function(data) {
-			if(model.save(data)) {
-				console.log("new note");
-				// Controller.trigger('note:new', model)
-			};
-		})
 
 		Me.regions.main.show(noteView);
 	}
