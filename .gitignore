@@ -1,0 +1,17 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+front/dist
+front/tmp
+
+# dependencies
+front/node_modules
+front/bower_components
+
+# misc
+front/.sass-cache
+front/connect.lock
+front/coverage/*
+front/libpeerconnection.log
+npm-debug.log
+testem.log

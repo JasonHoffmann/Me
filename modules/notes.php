@@ -33,7 +33,7 @@ class Me_Notes {
 	function add_notes_to_rest_api() {
 		global $wp_post_types;
 		$wp_post_types['me_note']->show_in_rest = true;
-		$wp_post_types['me_note']->rest_base = 'me_notes';
+		$wp_post_types['me_note']->rest_base = 'me-notes';
 		$wp_post_types['me_note']->rest_controller_class = 'WP_REST_Posts_Controller';
 	}
 
@@ -66,9 +66,8 @@ class Me_Notes {
 			'show_in_nav_menus'          => true,
 			'show_tagcloud'              => false,
 		);
-		register_taxonomy( 'me_note_tags', array( 'me_note' ), $args );
+		register_taxonomy( 'me-note-tags', array( 'me_note' ), $args );
 
-		register_taxonomy_for_object_type( 'me_note_tags', 'me_note' );
 	}
 
 	function register_notes_custom_type() {
@@ -114,7 +113,7 @@ class Me_Notes {
 	}
 
 	function add_fields_to_response( $data, $post, $request ) {
-		$tags = wp_get_post_terms($post->ID, 'me_note_tags', array('fields' => 'names'));
+		$tags = wp_get_post_terms($post->ID, 'me-note-tags', array('fields' => 'names'));
 		$data->data['tags'] = $tags;
 
 		return $data;

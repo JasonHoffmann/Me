@@ -1,0 +1,12 @@
+	{{#link-to 'notes' class="note-back"}}Back to notes{{/link-to}}
+
+	<div class="note-header">
+		<h3 class="note-title">{{ model.title.rendered}}</h3>
+		<div class="note-show-actions">
+			<a href="#" class="btn note-show-edit">Edit</a>
+		</div>
+	</div>
+
+	<div class="notes-show-content">
+		{{{ model.content.rendered }}}
+	</div>

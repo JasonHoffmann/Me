@@ -1,0 +1,8 @@
+<div class="note-header">
+	{{input placeholder="New Note Title" class="note-title note-edit-title" value=newTitle}}
+	<div class="note-show-actions">
+		<a href="#" class="btn note-show-edit" {{ action 'createNote' }}>Save</a>
+	</div>
+</div>
+
+{{ text-editor class="note-editor"}}

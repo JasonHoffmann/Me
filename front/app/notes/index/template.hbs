@@ -1,0 +1,35 @@
+  <div class="me-sidebar">
+    <ul class="no-list notes-tags-list">
+      <li class="notes-tags-item is-active">
+        <a {{ action 'filterByTag' 'all' }} href="#" class="notes-tags-link">All Tags</a>
+        </li>
+      {{#each model.tags as |tag|}}
+      <li class="notes-tags-item" {{ action 'filterByTag' tag.name }}>
+        <a 
+        {{ action 'toggleClass' tag }}
+        href="#" class="{{if tag.isActive 'is-active'}} notes-tags-link js-tag">{{ tag.name }}</a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+
+  <div class="me-main">
+  <ul class="no-list notes-list">
+  <li class="notes-item notes-list-actions">
+  	<a href="#" class="btn notes-new">+ New Note</a>
+  </li>
+  {{#each filteredNotes as |note|}}
+    <li class="notes-item">
+    	<div class="notes-list-content">
+    		<div class="notes-list-buttons">
+    			<a class="btn" href="#">Edit</a>
+    			<a class="btn" href="#">Delete</a>
+    		</div>
+    		<h3 class="notes-list-title">
+    			{{#link-to 'notes.show' note}} {{ note.title.rendered }} {{/link-to}}
+    		</h3>
+   	</div>
+   </li>
+  {{/each}}
+  </ul>
+  </div>

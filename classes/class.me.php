@@ -124,19 +124,18 @@ class Me {
 
 		// TODO: Enqueue these only on the pages that need them (check for me query var)
 
-		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
-		wp_enqueue_style( 'tbw_editor_style', ME__PLUGIN_URL . 'front/css/lib/trumbowyg.min.css' );
+		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/dist/assets/me.css' );
+		wp_enqueue_style( 'tbw_editor_style', ME__PLUGIN_URL . 'front/dist/assets/trumbowyg.css' );
 
-		wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
-		wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		wp_enqueue_script( 'backbone.syphon', ME__PLUGIN_URL . 'front/js/lib/backbone.syphon.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		wp_enqueue_script( 'ember', ME__PLUGIN_URL . 'front/dist/assets/vendor.js', array( 'jquery', 'wp-api'), '', true );
+		// wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'ember_prod' ), '', true );
 
-		wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
+		wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/dist/assets/app.js', array( 'jquery', 'ember'), '', true );
 
 		wp_localize_script( 'me_script', 'me_vars', array(
 			'active_modules' => Me::localize_modules(),
-			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/'
+			'rootURL' => wp_make_link_relative( home_url( '/me' ) ),
+			'baseURL' => wp_make_link_relative( home_url() )
 			) );
 		wp_enqueue_script( 'me_script' );
 	}
@@ -191,7 +190,7 @@ class Me {
 
 		if (isset($wp_query->query_vars['me'])) {
 			if( is_user_logged_in() ) {
-				include ME__PLUGIN_DIR . 'front/templates/template.php';
+				include ME__PLUGIN_DIR . 'front/dist/template.php';
 				exit;
 			} else {
 				wp_safe_redirect( home_url( '/' ) );
