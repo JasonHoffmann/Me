@@ -4,7 +4,8 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     vendorFiles: {
-      'jquery.js' : false
+      'jquery.js' : false,
+      'ember-data.js' : false
     },
     outputPaths: {
       app: {
@@ -17,7 +18,8 @@ module.exports = function(defaults) {
     storeConfigInMeta: false
   });
 
-  app.import('vendor/trumbowyg.js')
+  app.import('bower_components/ember-resource/dist/ember-resource.js');
+  app.import('vendor/trumbowyg.js');
 
   // Use `app.import` to add additional libraries to the generated
   // output files.

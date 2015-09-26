@@ -1,8 +1,16 @@
-import DS from 'ember-data';
+import Ember from 'ember';
 
-export default DS.Model.extend({
-	title: DS.attr(),
-	content: DS.attr(),
-	tags: DS.attr()
-  
-});
+export default Ember.Resource.define({
+	url: '/me-notes',
+
+	schema: {
+		id: Number,
+		title: {
+			rendered: String
+		},
+		content: {
+			rendered: String
+		}
+	}
+
+})
