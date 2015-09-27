@@ -192,7 +192,7 @@ Me.module('Notes.Entities', function(Entities, Me, Backbone, Marionette, $, _) {
 
 	getNotes = function() {
 		if(Me.Notes.Collection.list.length > 1) {
-			return Me.Notes.Collection.list);
+			return Me.Notes.Collection.list;
 		} else {
 			var notes = new Entities.NoteCollection();
 			var defer = $.Deferred();

@@ -15,20 +15,7 @@
 <?php wp_head(); ?>
 
 <body id="me-plugin">
-
-<div id="me-plugin-body" class="body">
-	<div id="me-plugin-header">
-	</div>
-	<div id="me-plugin-content">
-	</div>
-</div>
-
-<script type="text/template" id="main-header">
-	 <span class="module-header-slash">/</span>Me
-</script>
-<script type="text/template" id="active-modules">
-	<a href="#" class="module-list-link btn js-module-link"><%- name %></a>
-</script>
+	<div class="application"></div>
 
 <script type="text/template" id="notes-list">
 	<div class="notes-list-content">

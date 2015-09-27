@@ -127,18 +127,27 @@ class Me {
 		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
 		wp_enqueue_style( 'tbw_editor_style', ME__PLUGIN_URL . 'front/css/lib/trumbowyg.min.css' );
 
-		wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
-		wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		wp_enqueue_script( 'backbone.syphon', ME__PLUGIN_URL . 'front/js/lib/backbone.syphon.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		// Going to let Require Handle all of this
+		// wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
+		// wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		// wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		// wp_enqueue_script( 'backbone.syphon', ME__PLUGIN_URL . 'front/js/lib/backbone.syphon.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
+		// wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
 
-		wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
+		// wp_localize_script( 'me_script', 'me_vars', array(
+		// 	'active_modules' => Me::localize_modules(),
+		// 	'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/'
+		// 	) );
+		// wp_enqueue_script( 'me_script' );
 
-		wp_localize_script( 'me_script', 'me_vars', array(
-			'active_modules' => Me::localize_modules(),
-			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/'
+		wp_enqueue_script( 'require', ME__PLUGIN_URL . 'front/js/lib/require.js', '', '', true);
+		wp_register_script( 'load', ME__PLUGIN_URL . 'front/js/r.js', 'require', '', true);
+		wp_localize_script( 'load', 'meVars', array(
+			'js_url' => ME__PLUGIN_URL . '/front/js',
+			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
+			'active_modules' => Me::localize_modules()
 			) );
-		wp_enqueue_script( 'me_script' );
+		wp_enqueue_script( 'load' );
 	}
 
 	/**
