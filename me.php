@@ -12,7 +12,7 @@
  * Domain Path: /languages/
  */
 
-define( 'ME__VERSION',            '0.1.0' );
+define( 'ME__VERSION',            '0.1.1' );
 define( 'ME__PLUGIN_DIR',         plugin_dir_path( __FILE__ ) );
 define( 'ME__PLUGIN_URL',         plugin_dir_url( __FILE__ ) );
 define( 'ME__PLUGIN_BASE',         plugin_basename( __FILE__ ) );

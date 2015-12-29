@@ -74,9 +74,45 @@ class Me {
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_all_scripts' ) );
 
+		add_action( 'rest_api_init', array( $this, 'add_me_modules_to_rest_api' ) );
+
 		add_action( 'init', array( $this, 'handle_rewrites' ) );
 		add_filter('template_redirect', array( $this, 'me_redirect') );
 
+	}
+
+	/**
+	 * Adds a list of modules to our API endpoint
+	 * 
+	 * Registers endpoints to retrieve a list of modules
+	 *
+	 * @since 0.1.1
+	 * 
+	 * 
+	 */
+	function add_me_modules_to_rest_api() {
+		$namespace = 'me/v1';
+
+		register_rest_route( $namespace, '/modules/', array(
+		    'methods' => 'GET',
+		    'callback' => array( $this, 'me_get_modules' ),
+		) );
+	}
+
+	/**
+	 * Gets a list of modules for our API endpoint
+	 * 
+	 * Callback for the GET method of the "modules" endpoint
+	 *
+	 * @since 0.1.1
+	 * 
+	 * 
+	 */
+	function me_get_modules() {
+		$return = self::get_all_modules();
+		$response = new WP_REST_Response( $return );
+		$response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin','*' ) );
+		return $response;
 	}
 
 
@@ -124,30 +160,18 @@ class Me {
 
 		// TODO: Enqueue these only on the pages that need them (check for me query var)
 
-		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
-		wp_enqueue_style( 'tbw_editor_style', ME__PLUGIN_URL . 'front/css/lib/trumbowyg.min.css' );
+		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'app/css/style.css' );
 
-		// Going to let Require Handle all of this
-		// wp_enqueue_script( 'backbone.marionette', ME__PLUGIN_URL . 'front/js/lib/backbone.marionette.min.js', array( 'jquery', 'underscore', 'backbone'), '', true );
-		// wp_enqueue_script( 'fetch_cache', ME__PLUGIN_URL . 'front/js/lib/backbone.fetch-cache.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		// wp_enqueue_script( 'tbw_editor', ME__PLUGIN_URL . 'front/js/lib/trumbowyg.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		// wp_enqueue_script( 'backbone.syphon', ME__PLUGIN_URL . 'front/js/lib/backbone.syphon.min.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette' ), '', true );
-		// wp_register_script( 'me_script', ME__PLUGIN_URL . 'front/js/app.js', array( 'jquery', 'underscore', 'backbone', 'backbone.marionette', 'wp-api' ), '', true );
-
-		// wp_localize_script( 'me_script', 'me_vars', array(
-		// 	'active_modules' => Me::localize_modules(),
-		// 	'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/'
-		// 	) );
-		// wp_enqueue_script( 'me_script' );
-
-		wp_enqueue_script( 'require', ME__PLUGIN_URL . 'front/js/lib/require.js', '', '', true);
-		wp_register_script( 'load', ME__PLUGIN_URL . 'front/js/r.js', 'require', '', true);
-		wp_localize_script( 'load', 'meVars', array(
-			'js_url' => ME__PLUGIN_URL . '/front/js',
+		wp_register_script( 'main', ME__PLUGIN_URL . 'app/js/lib/system.js', '', '', true);
+		wp_localize_script( 'main', 'meVars', array(
+			'js_url' => ME__PLUGIN_URL . '/app/js',
 			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
-			'active_modules' => Me::localize_modules()
+			'active_modules' => Me::localize_modules(),
+			'plugin_url' => ME__PLUGIN_URL
 			) );
-		wp_enqueue_script( 'load' );
+		wp_enqueue_script( 'main' );
+		// wp_enqueue_script('system', ME__PLUGIN_URL . 'app/js/lib/system.js');
+		// wp_enqueue_script('test', ME__PLUGIN_URL . 'outfile.js');
 	}
 
 	/**
@@ -200,7 +224,7 @@ class Me {
 
 		if (isset($wp_query->query_vars['me'])) {
 			if( is_user_logged_in() ) {
-				include ME__PLUGIN_DIR . 'front/templates/template.php';
+				include ME__PLUGIN_DIR . 'app/templates/template.php';
 				exit;
 			} else {
 				wp_safe_redirect( home_url( '/' ) );

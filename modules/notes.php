@@ -22,19 +22,63 @@ class Me_Notes {
 		add_action( 'init', array( $this, 'register_notes_custom_type' ) );
 		add_action( 'init', array( $this, 'register_notes_tags' ) );
 
-		add_action( 'init', array( $this, 'add_notes_to_rest_api' ) );
-
-		add_filter('rest_prepare_me_note', array( $this, 'add_fields_to_response' ), 10, 3);
-
-		add_filter( 'excerpt_more', array( $this, 'filter_notes_excerpt' ), 999 );
-
+		add_action( 'rest_api_init', array( $this, 'add_notes_to_rest_api' ) );
 	}
 
 	function add_notes_to_rest_api() {
-		global $wp_post_types;
-		$wp_post_types['me_note']->show_in_rest = true;
-		$wp_post_types['me_note']->rest_base = 'me_notes';
-		$wp_post_types['me_note']->rest_controller_class = 'WP_REST_Posts_Controller';
+		$namespace = 'me/v1';
+
+		register_rest_route( $namespace, '/notes/', array(
+		    'methods' => 'GET',
+		    'callback' => array( $this, 'me_get_notes' ),
+		) );
+
+		register_rest_route( $namespace, '/notes/', array(
+		    'methods' => 'POST',
+		    'callback' => array( $this, 'me_process_notes' ),
+		) );
+	}
+
+	function me_get_notes() {
+	    if ( 0 || false === ( $return = get_transient( 'me_all_notes' ) ) ) {
+	            $query = apply_filters( 'me_notes_query', array(
+	                'numberposts' => -1,
+	                'post_type'   => 'post',
+	                'post_status' => 'publish',
+	            ) );
+	            $all_posts = get_posts( $query );
+	            $return = array();
+
+	            foreach ( $all_posts as $post ) {
+	                $return[] = array(
+	                    'ID' => $post->ID,
+	                    'title' => $post->post_title,
+	                    'permalink' => get_permalink( $post->ID ),
+	                    'content' => $post->post_content
+	                );
+	            }
+
+	        // cache for 10 minutes
+	        set_transient( 'me_all_notes', $return, apply_filters( 'me_notes_ttl', 60*10 ) );
+	    }
+	    $response = new WP_REST_Response( $return );
+	    $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin','*' ) );
+	    return $response;
+	}
+
+	function me_process_notes() {
+		$post_id = $_POST['id'];
+		// input validation
+		if ( ! is_numeric( $post_id ) ) {
+			return false;
+		}
+
+		delete_transient( 'giar_all_posts' );
+		$update_success = 'TODO: MAKE THIS WORK';
+		
+		$response = new WP_REST_Response( $update_success );
+		$response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
+		return $response;
 	}
 
 	function register_notes_tags() {
@@ -99,7 +143,7 @@ class Me_Notes {
 			'hierarchical'        => false,
 			'public'              => true,
 			'show_ui'             => true,
-			'show_in_menu'        => false,
+			'show_in_menu'        => true,
 			'menu_position'       => 5,
 			'show_in_admin_bar'   => false,
 			'show_in_nav_menus'   => false,

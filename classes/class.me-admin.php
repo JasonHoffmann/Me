@@ -36,44 +36,12 @@ class Me_Admin {
 	 * 
 	 */
 	private function __construct() {
-		add_action( 'admin_init', array( $this, 'has_rest_api_plugin' ) );
 
 		add_action( 'admin_menu', array( $this, 'add_me_options_page' ) );
 
 		add_action( 'load-settings_page_me', array( $this, 'admin_page_load' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts' ) );
-	}
-
-	/**
-	 * Fires on admin_init for now.
-	 * 
-	 * Checks for the existence of the REST API, which is required for this plugin to work
-	 * 
-	 * @since 0.1.0
-	 * 
-	 */
-	function has_rest_api_plugin() {
-		if( is_admin() && current_user_can( 'activate_plugins' ) && !is_plugin_active( 'WP-API-develop/plugin.php' ) && !is_plugin_active( 'WP-API-2.0-beta1.1/plugin.php') ) {
-			
-			add_action( 'admin_notices', array( 'Me_Admin', 'rest_api_notice' ) );
-
-			deactivate_plugins( ME__PLUGIN_BASE ); 
-
-			if ( isset( $_GET['activate'] ) ) {
-			    unset( $_GET['activate'] );
-			}
-		}
-	}
-
-	/**
-	 * Posts a notice if the REST API is not found
-	 * 
-	 * @since 0.1.0
-	 * 
-	 */
-	function rest_api_notice(){
-	    ?><div class="error"><p>The latest version of the WP API is required. You can download it <a href="https://github.com/WP-API/WP-API/tree/2.0-beta1.1">on GitHub</a></p></div><?php
 	}
 
 	/**
