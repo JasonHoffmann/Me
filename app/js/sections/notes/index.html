@@ -1,0 +1,16 @@
+<div class="notes-item notes-list-actions">
+	<button v-on:click.prevent="newNote" class="btn notes-new js-new">+ New Note</button>
+</div>
+
+<div v-for="note in notes" class="notes-list-content notes-item">
+	<div class="notes-list-buttons">
+		<a class="btn js-edit" v-link="{ name: 'edit_note', params: { id: note.ID }}">Edit</a>
+		<a class="btn js-trash" v-on:click.prevent="deleteNote(note)">Delete</a>
+	</div>
+	<h3 class="notes-list-title">
+		<a href="#" class="js-view">
+			{{ note.title }}
+		</a>
+	</h3>
+	<div class="notes-list-excerpt">{{{ note.content }}}</div>
+</div>

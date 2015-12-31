@@ -17,19 +17,25 @@
     "url": "https://github.com/JasonHoffmann/Me/issues"
   },
   "homepage": "https://github.com/JasonHoffmann/Me#readme",
+  "private": true,
   "dependencies": {
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "marked": "^0.3.5",
+    "redux": "^3.0.5",
+    "redux-thunk": "^1.0.3",
+    "revue": "^1.2.44",
+    "vue": "^1.0.13",
+    "vue-resource": "^0.5.1",
+    "vue-router": "^0.7.7"
   },
   "devDependencies": {
-    "babel-cli": "^6.3.17",
+    "gulp-html-to-js": "git://github.com/JasonHoffmann/gulp-html-to-js.git",
+    "babel-plugin-resolver": "0.0.4",
     "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
     "gulp": "^3.9.0",
     "gulp-uglify": "^1.5.1",
-    "uglify": "^0.1.5",
+    "redux": "^3.0.5",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
