@@ -15,22 +15,8 @@
 <?php wp_head(); ?>
 
 <body id="me-plugin">
-	<div id="header"></div>
-	<main id="main"></main>
+	<div id="app">
+	</div>
 <?php wp_footer(); ?>
-<script>
-  // set our baseURL reference path
-  System.config({
-    baseURL: meVars.plugin_url,
-    bundles: {
-      'bundle': ['outfile']
-    }
-  });
-
-  // loads /app/main.js
-  System.import('outfile.js').then(function(m) {
-  	console.log(m);
-  });
-</script>
 </body>
 

@@ -1,0 +1,5 @@
+<ul v-for="item in active_sections" class="module-list">
+	<li class="module-list-item">
+		<a v-link="{ path: item.slug }" class="module-list-link btn js-module-link">{{ item.name }}</a>
+	</li>
+</ul>

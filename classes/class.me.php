@@ -72,7 +72,7 @@ class Me {
 	private function __construct() {
 		Me::load_modules();
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_all_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_all_scripts' ), 99 );
 
 		add_action( 'rest_api_init', array( $this, 'add_me_modules_to_rest_api' ) );
 
@@ -157,21 +157,32 @@ class Me {
 	 * 
 	 */
 	function load_all_scripts() {
+		global $wp_query;
 
-		// TODO: Enqueue these only on the pages that need them (check for me query var)
+		if (isset($wp_query->query_vars['me'])) {
+			// This clears all current scripts and styles. Open to more elegant solutions here
+			global $wp_scripts;
+			global $wp_styles;
+			$adminBar = $wp_styles->registered['admin-bar'];
+			$openSans = $wp_styles->registered['open-sans'];
+			$dashicons = $wp_styles->registered['dashicons'];
+			$wp_scripts->registered = array();
+			$wp_styles->queue = array("admin-bar");
 
-		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'app/css/style.css' );
+			wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'app/css/style.css' );
 
-		wp_register_script( 'main', ME__PLUGIN_URL . 'app/js/lib/system.js', '', '', true);
-		wp_localize_script( 'main', 'meVars', array(
-			'js_url' => ME__PLUGIN_URL . '/app/js',
-			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
-			'active_modules' => Me::localize_modules(),
-			'plugin_url' => ME__PLUGIN_URL
-			) );
-		wp_enqueue_script( 'main' );
-		// wp_enqueue_script('system', ME__PLUGIN_URL . 'app/js/lib/system.js');
-		// wp_enqueue_script('test', ME__PLUGIN_URL . 'outfile.js');
+			wp_register_script( 'main', ME__PLUGIN_URL . 'app/dist/main.js', '', '', true);
+			wp_localize_script( 'main', 'meVars', array(
+				'js_url' => ME__PLUGIN_URL . '/app/js',
+				'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
+				'api_url' => home_url('/wp-json/me/v1'),
+				'active_modules' => Me::localize_modules(),
+				'plugin_url' => ME__PLUGIN_URL
+				) );
+			wp_enqueue_script( 'main' );
+
+
+		}
 	}
 
 	/**

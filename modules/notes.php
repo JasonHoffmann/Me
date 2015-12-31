@@ -1,5 +1,5 @@
 <?php
-
+require_once( ME__PLUGIN_DIR . 'includes/php-markdown/Markdown.inc.php' );
 /**
  * Module Name: Notes
  * Module Description: Keep notes and organize them in categories
@@ -29,56 +29,145 @@ class Me_Notes {
 		$namespace = 'me/v1';
 
 		register_rest_route( $namespace, '/notes/', array(
-		    'methods' => 'GET',
-		    'callback' => array( $this, 'me_get_notes' ),
-		) );
+			array(
+			    'methods' => WP_REST_Server::READABLE,
+			    'callback' => array( $this, 'me_get_notes' ),
+			),
+			array(
+				'methods' => WP_REST_Server::CREATABLE,
+				'callback' => array( $this, 'me_create_note' )
+			)
+		));
 
-		register_rest_route( $namespace, '/notes/', array(
-		    'methods' => 'POST',
-		    'callback' => array( $this, 'me_process_notes' ),
-		) );
+		register_rest_route( $namespace, '/notes/(?P<id>\d+)', array(
+			array(
+				'methods' => 'GET',
+				'callback' => array( $this, 'me_get_note' )
+			),
+
+			array(
+				'methods' => WP_REST_Server::EDITABLE,
+				'callback' => array( $this, 'me_process_notes' )
+			),
+
+			array(
+				'methods'  => WP_REST_Server::DELETABLE,
+				'callback' => array( $this, 'me_delete_note' ),
+			)
+		));
 	}
 
+	function me_create_note( $request ) {
+		if ( ! empty( $request['id'] ) ) {
+			return new WP_Error( 'rest_post_exists', __( 'Cannot create existing post.' ), array( 'status' => 400 ) );
+		}
+
+		$prepared_post = new stdClass;
+
+		// Post title.
+		if ( isset( $request['title'] ) ) {
+			if ( is_string( $request['title'] ) ) {
+				$prepared_post->post_title = wp_filter_post_kses( $request['title'] );
+			}
+		}
+
+		$prepared_post->post_type = 'me_note';
+
+		$prepared_post->post_status = 'publish';
+
+		$post_id = wp_insert_post( $prepared_post, true );
+
+		update_post_meta($post_id, 'markdown', '');
+
+		$response = $this->me_get_note( array(
+			'id'      => $post_id
+		) );
+
+		$response = rest_ensure_response( $response );
+		$response->set_status( 201 );
+		return $response;
+	}
+
+	function me_get_note( $data ) {
+		$post = get_post($data['id']);
+
+		$markdown = get_post_meta($data['id'], 'markdown', true);
+
+
+		$return = array(
+			'ID' => $post->ID,
+			'title' => $post->post_title,
+			'permalink' => get_permalink( $post->ID ),
+			'content' => apply_filters( 'the_content', $post->post_content ),
+			'markdown' => $markdown
+		);
+		$response = new WP_REST_Response( $return );
+		return $response;
+	} 
+
 	function me_get_notes() {
-	    if ( 0 || false === ( $return = get_transient( 'me_all_notes' ) ) ) {
 	            $query = apply_filters( 'me_notes_query', array(
 	                'numberposts' => -1,
-	                'post_type'   => 'post',
+	                'post_type'   => 'me_note',
 	                'post_status' => 'publish',
 	            ) );
 	            $all_posts = get_posts( $query );
-	            $return = array();
 
 	            foreach ( $all_posts as $post ) {
+	            	$markdown = get_post_meta($post->ID, 'markdown', true);
 	                $return[] = array(
 	                    'ID' => $post->ID,
 	                    'title' => $post->post_title,
 	                    'permalink' => get_permalink( $post->ID ),
-	                    'content' => $post->post_content
+	                    'content' => apply_filters( 'the_content', $post->post_content ),
+	                    'markdown' => $markdown
 	                );
 	            }
-
-	        // cache for 10 minutes
-	        set_transient( 'me_all_notes', $return, apply_filters( 'me_notes_ttl', 60*10 ) );
-	    }
 	    $response = new WP_REST_Response( $return );
-	    $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin','*' ) );
 	    return $response;
 	}
 
-	function me_process_notes() {
-		$post_id = $_POST['id'];
-		// input validation
-		if ( ! is_numeric( $post_id ) ) {
-			return false;
+	function me_process_notes( $request ) {
+		$id = (int) $request['id'];
+
+		$post = get_post( $id );
+
+		if ( isset( $request['title'] ) ) {
+			if ( is_string( $request['title'] ) ) {
+				$post->post_title = wp_filter_post_kses( $request['title'] );
+			} elseif ( ! empty( $request['title']['raw'] ) ) {
+				$post->post_title = wp_filter_post_kses( $request['title']['raw'] );
+			}
 		}
 
-		delete_transient( 'giar_all_posts' );
-		$update_success = 'TODO: MAKE THIS WORK';
+		// Post content.
+		if ( isset( $request['markdown'] ) ) {
+			if ( is_string( $request['markdown'] ) ) {
+				update_post_meta($post->ID, 'markdown', $request['markdown']);
+				$html = \Michelf\Markdown::defaultTransform($request['markdown']);
+				$post->post_content = $html;
+			}
+		}
+
+		$post_id = wp_update_post( (array) $post, true );
+
+		$data = $this->me_get_note(array(
+			'id' => $post_id
+			));
 		
-		$response = new WP_REST_Response( $update_success );
-		$response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
-		return $response;
+		return new WP_REST_Response( $data, 200 );
+	}
+
+	function me_delete_note( $request ) {
+		$id = (int) $request['id'];
+
+		$result = wp_trash_post( $id );
+
+		$data = array(
+			'trashed' => true
+		);
+
+		return $data;
 	}
 
 	function register_notes_tags() {
