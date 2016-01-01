@@ -91,7 +91,7 @@ var _store = require('/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/sto
 
 var _store2 = _interopRequireDefault(_store);
 
-var _views = require('./views');
+var _views = require('/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/views');
 
 var _views2 = _interopRequireDefault(_views);
 
@@ -118,7 +118,7 @@ var App = _vue2.default.extend({
 
 _router2.default.start(App, '#app');
 
-},{"./views":11,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/components/editor/index":2,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/router":4,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/stores/store":10,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/revue":24,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue":45,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue-resource":29,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue-router":44}],4:[function(require,module,exports){
+},{"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/components/editor/index":2,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/router":4,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/stores/store":10,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/app/js/views":11,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/revue":24,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue":45,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue-resource":29,"/Users/Jay/Sites/slash-me/wp-content/plugins/Me/node_modules/vue-router":44}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
