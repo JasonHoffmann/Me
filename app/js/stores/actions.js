@@ -1,6 +1,6 @@
-import api from 'api/index';
+import api from 'root/api/index';
 import Vue from 'vue';
-import router from 'router';
+import router from 'root/router';
 
 const GET_SECTIONS_SUCCESS = 'GET_SECTIONS_SUCCESS';
 const GET_ACTIVE_SECTIONS = 'GET_ACTIVE_SECTIONS';

@@ -28,15 +28,24 @@
     "vue-router": "^0.7.7"
   },
   "devDependencies": {
-    "gulp-html-to-js": "git://github.com/JasonHoffmann/gulp-html-to-js.git",
-    "babel-plugin-resolver": "0.0.4",
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "browserify": "^12.0.1",
     "gulp": "^3.9.0",
-    "gulp-uglify": "^1.5.1",
-    "redux": "^3.0.5",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "gulp-html-to-js": "git://github.com/JasonHoffmann/gulp-html-to-js.git",
+    "gulp-jspm": "^0.5.5",
+    "jspm": "^0.16.19"
+  },
+  "jspm": {
+    "dependencies": {
+      "redux": "npm:redux@^3.0.5",
+      "redux-thunk": "npm:redux-thunk@^1.0.3",
+      "revue": "npm:revue@^1.2.5",
+      "vue": "npm:vue@^1.0.13",
+      "vue-resource": "npm:vue-resource@^0.5.1",
+      "vue-router": "npm:vue-router@^0.7.7"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
   }
 }

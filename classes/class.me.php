@@ -171,7 +171,8 @@ class Me {
 
 			wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'app/css/style.css' );
 
-			wp_register_script( 'main', ME__PLUGIN_URL . 'app/dist/main.js', '', '', true);
+			// wp_register_script( 'main', ME__PLUGIN_URL . '/app/dist/main.js', '', '', true);
+			wp_register_script( 'main', ME__PLUGIN_URL . '/app/build/index.bundle.js', '', '', true);
 			wp_localize_script( 'main', 'meVars', array(
 				'js_url' => ME__PLUGIN_URL . '/app/js',
 				'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
