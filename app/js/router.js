@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Sections from 'sections/index';
-import Notes from 'sections/notes/index/';
-import Notes_Edit from 'sections/notes/edit';
+import Sections from 'root/sections/index';
+import Notes from 'root/sections/notes/index';
+import Notes_Edit from 'root/sections/notes/edit';
 
 Vue.use(VueRouter);
 var router = new VueRouter();

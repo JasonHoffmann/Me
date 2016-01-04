@@ -1,24 +1,23 @@
 import Vue from 'vue';
-import views from 'views';
-import store from 'stores/store';
-import {getSections} from 'stores/actions';
+import views from 'root/views';
+import store from 'root/stores/store';
+import {getSections} from 'root/stores/actions';
+import Revue from 'revue';
 
 var Sections = Vue.extend({
 	template: views['sections/index'],
 
 	data: function() {
 		return {
-			sections: this.$revue.getState().sections,
-			active_sections: this.$revue.getState().active_sections
+			active_sections: this.$store.state.active_sections
 		}
 	},
 
 	created: function() {
-		this.$revue.dispatch(getSections());
+		this.$store.dispatch(getSections());
 	},
 
 	ready: function() {
-		this.$subscribe('sections');
 		this.$subscribe('active_sections');	
 	}
 });

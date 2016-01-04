@@ -1,20 +1,20 @@
 import Vue from 'vue';
-import views from 'views';
-import store from 'stores/store';
-import {getNote, updateNote} from 'stores/actions';
+import views from 'root/views';
+import store from 'root/stores/store';
+import {getNote, updateNote} from 'root/stores/actions';
 
 var Notes_Edit = Vue.extend({
 	template: views['notes/edit'],
 
 	data : function() {
 		return {
-			note: this.$revue.getState().note
+			note: this.$store.state.note
 		}	
 	},
 
 	created: function() {
 		var id = this.$route.params.id;
-		this.$revue.dispatch(getNote(id));
+		this.$store.dispatch(getNote(id));
 	},
 
 	ready: function() {
@@ -23,7 +23,7 @@ var Notes_Edit = Vue.extend({
 
 	events: {
 		save: function() {
-			this.$revue.dispatch(updateNote(this.$route.params.id, this.note))
+			this.$store.dispatch(updateNote(this.$route.params.id, this.note))
 		}
 	}
 });

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import views from 'views';
+import views from 'root/views';
 
 var Editor = Vue.extend({
 	template: views['editor/editor'],
