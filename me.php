@@ -23,6 +23,7 @@ require_once( ME__PLUGIN_DIR . 'classes/class.me-activate.php' );
 require_once( ME__PLUGIN_DIR . 'classes/class.me.loader-front.php' );
 require_once( ME__PLUGIN_DIR . 'classes/class.me-utils.php' );
 require_once( ME__PLUGIN_DIR . 'classes/class.me.api-modules.php' );
+require_once( ME__PLUGIN_DIR . 'classes/class.me.api-base.php' );
 
 
 if ( is_admin() ) {
