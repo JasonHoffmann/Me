@@ -78,6 +78,7 @@ class Me {
 		$wp_scripts->registered = array();
 		$wp_styles->queue = array("admin-bar");
 
+		wp_enqueue_style( 'grids', ME__PLUGIN_URL . 'front/css/lib/flexboxgrid.css' );
 		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
 
 		wp_enqueue_script( 'vendors', ME__PLUGIN_URL . '/front/app/vendor/vendor.min.js', '', '', true);

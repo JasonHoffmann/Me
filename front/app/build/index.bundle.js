@@ -93,7 +93,8 @@ $__System.register('6', ['3', '4'], function (_export) {
 				data: function data() {
 					return {
 						sections: sectionStore.state.sections,
-						active_sections: sectionStore.state.active_sections
+						active_sections: sectionStore.state.active_sections,
+						string: 'string'
 					};
 				},
 
@@ -110,6 +111,352 @@ $__System.register('6', ['3', '4'], function (_export) {
 			});
 
 			_export('default', Sections);
+		}
+	};
+});
+
+$__System.registerDynamic("7", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var global = module.exports = typeof window != 'undefined' && window.Math == Math ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+  if (typeof __g == 'number')
+    __g = global;
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("8", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(it) {
+    if (typeof it != 'function')
+      throw TypeError(it + ' is not a function!');
+    return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("9", ["8"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var aFunction = $__require('8');
+  module.exports = function(fn, that, length) {
+    aFunction(fn);
+    if (that === undefined)
+      return fn;
+    switch (length) {
+      case 1:
+        return function(a) {
+          return fn.call(that, a);
+        };
+      case 2:
+        return function(a, b) {
+          return fn.call(that, a, b);
+        };
+      case 3:
+        return function(a, b, c) {
+          return fn.call(that, a, b, c);
+        };
+    }
+    return function() {
+      return fn.apply(that, arguments);
+    };
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("a", ["7", "b", "9"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var global = $__require('7'),
+      core = $__require('b'),
+      ctx = $__require('9'),
+      PROTOTYPE = 'prototype';
+  var $export = function(type, name, source) {
+    var IS_FORCED = type & $export.F,
+        IS_GLOBAL = type & $export.G,
+        IS_STATIC = type & $export.S,
+        IS_PROTO = type & $export.P,
+        IS_BIND = type & $export.B,
+        IS_WRAP = type & $export.W,
+        exports = IS_GLOBAL ? core : core[name] || (core[name] = {}),
+        target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE],
+        key,
+        own,
+        out;
+    if (IS_GLOBAL)
+      source = name;
+    for (key in source) {
+      own = !IS_FORCED && target && key in target;
+      if (own && key in exports)
+        continue;
+      out = own ? target[key] : source[key];
+      exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key] : IS_BIND && own ? ctx(out, global) : IS_WRAP && target[key] == out ? (function(C) {
+        var F = function(param) {
+          return this instanceof C ? new C(param) : C(param);
+        };
+        F[PROTOTYPE] = C[PROTOTYPE];
+        return F;
+      })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+      if (IS_PROTO)
+        (exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+    }
+  };
+  $export.F = 1;
+  $export.G = 2;
+  $export.S = 4;
+  $export.P = 8;
+  $export.B = 16;
+  $export.W = 32;
+  module.exports = $export;
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("c", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $Object = Object;
+  module.exports = {
+    create: $Object.create,
+    getProto: $Object.getPrototypeOf,
+    isEnum: {}.propertyIsEnumerable,
+    getDesc: $Object.getOwnPropertyDescriptor,
+    setDesc: $Object.defineProperty,
+    setDescs: $Object.defineProperties,
+    getKeys: $Object.keys,
+    getNames: $Object.getOwnPropertyNames,
+    getSymbols: $Object.getOwnPropertySymbols,
+    each: [].forEach
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("d", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(it) {
+    if (it == undefined)
+      throw TypeError("Can't call method on  " + it);
+    return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("e", ["d"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var defined = $__require('d');
+  module.exports = function(it) {
+    return Object(defined(it));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("f", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toString = {}.toString;
+  module.exports = function(it) {
+    return toString.call(it).slice(8, -1);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("10", ["f"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var cof = $__require('f');
+  module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it) {
+    return cof(it) == 'String' ? it.split('') : Object(it);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("11", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(exec) {
+    try {
+      return !!exec();
+    } catch (e) {
+      return true;
+    }
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("12", ["c", "e", "10", "11"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $ = $__require('c'),
+      toObject = $__require('e'),
+      IObject = $__require('10');
+  module.exports = $__require('11')(function() {
+    var a = Object.assign,
+        A = {},
+        B = {},
+        S = Symbol(),
+        K = 'abcdefghijklmnopqrst';
+    A[S] = 7;
+    K.split('').forEach(function(k) {
+      B[k] = k;
+    });
+    return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+  }) ? function assign(target, source) {
+    var T = toObject(target),
+        $$ = arguments,
+        $$len = $$.length,
+        index = 1,
+        getKeys = $.getKeys,
+        getSymbols = $.getSymbols,
+        isEnum = $.isEnum;
+    while ($$len > index) {
+      var S = IObject($$[index++]),
+          keys = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S),
+          length = keys.length,
+          j = 0,
+          key;
+      while (length > j)
+        if (isEnum.call(S, key = keys[j++]))
+          T[key] = S[key];
+    }
+    return T;
+  } : Object.assign;
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("13", ["a", "12"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $export = $__require('a');
+  $export($export.S + $export.F, 'Object', {assign: $__require('12')});
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("b", [], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var core = module.exports = {version: '1.2.6'};
+  if (typeof __e == 'number')
+    __e = core;
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("14", ["13", "b"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  $__require('13');
+  module.exports = $__require('b').Object.assign;
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.registerDynamic("15", ["14"], true, function($__require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": $__require('14'),
+    __esModule: true
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+$__System.register('16', ['5', '15'], function (_export) {
+	var api, _Object$assign, noteStore;
+
+	return {
+		setters: [function (_3) {
+			api = _3['default'];
+		}, function (_2) {
+			_Object$assign = _2['default'];
+		}],
+		execute: function () {
+			'use strict';
+
+			noteStore = {
+				state: {
+					active_note: { 'a': '1' },
+					notes: [],
+					api_called: false
+				},
+
+				init: function init() {
+					this.state.active_note = _Object$assign({}, this.state.active_note, { a: 1, b: 2 });
+					// Vue.set(this.state.active_note, 'a', '1');
+
+					if (!this.state.api_called) {
+						this.getAll();
+					}
+				},
+
+				mutate: function mutate() {
+					// this.state.active_note = Vue.extend({a: 1, b: '2'}, {});
+					//Vue.$data.set(this.state, 'active_note', 'asdf');
+
+					this.state.active_note = _Object$assign({}, this.state.active_note, { a: '1' });
+				},
+
+				getAll: function getAll() {
+					this.api_called = true;
+
+					api.get_notes().then(function (data) {
+						var first = _.head(data.data);
+						_.each(data.data, function (note) {
+							noteStore.state.notes.push(note);
+						});
+
+						// _.set(noteStore.state.active_note, first);
+						// console.log('asdf');
+						// console.log(noteStore.state.active_note);
+						// noteStore.state.active_note = Object.assign({}, noteStore.state.active_note, first);
+					});
+				}
+			};
+
+			_export('default', noteStore);
 		}
 	};
 });
@@ -149,53 +496,41 @@ $__System.register('5', [], function (_export) {
 	};
 });
 
-$__System.register('7', ['5'], function (_export) {
+$__System.register('17', ['5'], function (_export) {
 	'use strict';
 
-	var api, noteStore;
+	var api, activeNoteStore;
 	return {
-		setters: [function (_2) {
-			api = _2['default'];
+		setters: [function (_) {
+			api = _['default'];
 		}],
 		execute: function () {
-			noteStore = {
+			activeNoteStore = {
 				state: {
-					notes: [],
-					api_called: false
+					active_note: {}
 				},
 
 				init: function init() {
-					if (!this.state.api_called) {
-						this.getAll();
-					}
-				},
-
-				getAll: function getAll() {
-					this.api_called = true;
-
-					api.get_notes().then(function (data) {
-
-						_.each(data.data, function (note) {
-							noteStore.state.notes.push(note);
-						});
-					});
+					Vue.set(this.state.active_note, 'a', '1');
 				}
 			};
 
-			_export('default', noteStore);
+			_export('default', activeNoteStore);
 		}
 	};
 });
 
-$__System.register('8', ['3', '7'], function (_export) {
+$__System.register('18', ['3', '16', '17'], function (_export) {
 	'use strict';
 
-	var views, noteStore, Notes;
+	var views, noteStore, activeNoteStore, Notes;
 	return {
 		setters: [function (_) {
 			views = _['default'];
 		}, function (_2) {
 			noteStore = _2['default'];
+		}, function (_3) {
+			activeNoteStore = _3['default'];
 		}],
 		execute: function () {
 			Notes = Vue.extend({
@@ -203,12 +538,18 @@ $__System.register('8', ['3', '7'], function (_export) {
 
 				data: function data() {
 					return {
-						notes: noteStore.state.notes
+						notes: noteStore.state.notes,
+						active_note: noteStore.state.active_note
 					};
 				},
 
 				created: function created() {
 					noteStore.init();
+					activeNoteStore.init();
+				},
+
+				ready: function ready() {
+					noteStore.mutate();
 				},
 
 				methods: {
@@ -232,14 +573,14 @@ $__System.registerDynamic("3", [], true, function($__require, exports, module) {
   module.exports = Object.create(null);
   module.exports['sections/index'] = '<ul v-for="item in active_sections" class="module-list">\n	<li class="module-list-item">\n		<a v-link="{ path: item.slug }" class="module-list-link btn js-module-link">{{ item.name }}</a>\n	</li>\n</ul>';
   module.exports['editor/editor'] = '<form>\n	<div class="note-header">\n		<input name="title" class="note-title note-edit-title" v-model="note.title">\n\n		<div class="note-show-actions">\n			<button v-on:click.prevent="save" class="btn note-show-edit">Save</button>\n		</div>\n	</div>\n	<textarea name="content" class="note-edit-content"  v-model="note.markdown" autofocus>\n	</textarea>\n</form>';
-  module.exports['layout/layout'] = '<header>\n	<h2 class="module-header"><span class="module-header-slash">/</span>Me</h2>\n</header>\n\n<main class="note-container">\n	<router-view></router-view>\n</main>';
+  module.exports['layout/layout'] = '<main class="container">\n	<div class="row">\n		<router-view></router-view>\n	</div>\n</main>';
   module.exports['notes/edit'] = '<editor :note="note"></editor>';
-  module.exports['notes/index'] = '<div class="notes-item notes-list-actions">\n	<button v-on:click.prevent="newNote" class="btn notes-new js-new">+ New Note</button>\n</div>\n\n<div v-for="note in notes" class="notes-list-content notes-item">\n	<div class="notes-list-buttons">\n		<a class="btn js-edit" v-link="{ name: \'edit_note\', params: { id: note.ID }}">Edit</a>\n		<a class="btn js-trash" v-on:click.prevent="deleteNote(note)">Delete</a>\n	</div>\n	<h3 class="notes-list-title">\n		<a href="#" class="js-view">\n			{{ note.title }}\n		</a>\n	</h3>\n	<div class="notes-list-excerpt">{{{ note.content }}}</div>\n</div>';
+  module.exports['notes/index'] = '<aside class="col-xs-4">\n	<div class="nt-add">\n		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>\n	</div>\n\n	<section v-for="note in notes" class="nt-list">\n		<h3 class="nt-list-title">\n				{{ note.title }}\n		</h3>\n		<div class="nt-list-excerpt">{{{ note.content }}}</div>\n	</section>\n</aside>\n\n\n<div class="col-xs-8">\n	{{ active_note | json }}\n</div>\n';
   global.define = __define;
   return module.exports;
 });
 
-$__System.register('9', ['3'], function (_export) {
+$__System.register('19', ['3'], function (_export) {
 	'use strict';
 
 	var views, Notes_Edit;
@@ -278,7 +619,7 @@ $__System.register('9', ['3'], function (_export) {
 	};
 });
 
-$__System.register('a', ['6', '8', '9'], function (_export) {
+$__System.register('1a', ['6', '18', '19'], function (_export) {
     'use strict';
 
     var Sections, Notes, Notes_Edit, router;
@@ -315,7 +656,7 @@ $__System.register('a', ['6', '8', '9'], function (_export) {
     };
 });
 
-$__System.register('1', ['2', '3', 'a'], function (_export) {
+$__System.register('1', ['2', '3', '1a'], function (_export) {
 	'use strict';
 
 	var Editor, views, router, App;
@@ -332,7 +673,7 @@ $__System.register('1', ['2', '3', 'a'], function (_export) {
 			Vue.component('editor', Editor);
 
 			App = Vue.extend({
-				template: '<div><router-view></router-view></div>'
+				template: views['layout/layout']
 			});
 
 			Vue.use(VueResource);

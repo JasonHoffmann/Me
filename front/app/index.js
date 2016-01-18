@@ -5,7 +5,7 @@ import router from 'root/router';
 Vue.component('editor', Editor);
 
 var App = Vue.extend({
-	template: '<div><router-view></router-view></div>'
+	template: views['layout/layout']
 });
 
 Vue.use(VueResource);

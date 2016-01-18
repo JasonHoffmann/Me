@@ -7,7 +7,8 @@ var Sections = Vue.extend({
 	data: function(){
 		return {
 			sections: sectionStore.state.sections,
-			active_sections : sectionStore.state.active_sections
+			active_sections : sectionStore.state.active_sections,
+			string: 'string'
 		}
 	},
 
