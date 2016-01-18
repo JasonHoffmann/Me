@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import Sections from 'root/sections/index';
 import Notes from 'root/sections/notes/index';
 import Notes_Edit from 'root/sections/notes/edit';

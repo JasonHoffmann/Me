@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import views from 'root/views';
 
 var Editor = Vue.extend({

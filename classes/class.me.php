@@ -78,9 +78,10 @@ class Me {
 		$wp_scripts->registered = array();
 		$wp_styles->queue = array("admin-bar");
 
-		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'app/css/style.css' );
+		wp_enqueue_style( 'me_css', ME__PLUGIN_URL . 'front/css/style.css' );
 
-		wp_register_script( 'main', ME__PLUGIN_URL . '/app/build/index.bundle.js', '', '', true);
+		wp_enqueue_script( 'vendors', ME__PLUGIN_URL . '/front/app/vendor/vendor.min.js', '', '', true);
+		wp_register_script( 'main', ME__PLUGIN_URL . '/front/app/build/index.bundle.js', '', '', true);
 		wp_localize_script( 'main', 'meVars', array(
 			'js_url' => ME__PLUGIN_URL . '/app/js',
 			'root_url' => wp_make_link_relative( home_url( '/me' ) ) . '/',
@@ -102,7 +103,7 @@ class Me {
 	 */
 	function load_template( $original_template ) {
 		if( is_user_logged_in() ) {
-			return ME__PLUGIN_DIR . 'app/templates/template.php';
+			return ME__PLUGIN_DIR . 'front/templates/template.php';
 		} else {
 			return $original_template;
 		}

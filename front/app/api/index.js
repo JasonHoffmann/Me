@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 export default {
 	get_notes : function() {
 		return Vue.http.get(meVars.api_url + '/notes');

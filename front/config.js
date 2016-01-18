@@ -19,7 +19,7 @@ System.config({
     "redux": "npm:redux@3.0.5",
     "redux-thunk": "npm:redux-thunk@1.0.3",
     "revue": "npm:revue@1.2.5",
-    "root": "js",
+    "root": "app",
     "vue": "npm:vue@1.0.13",
     "vue-resource": "npm:vue-resource@0.5.1",
     "vue-router": "npm:vue-router@0.7.7",

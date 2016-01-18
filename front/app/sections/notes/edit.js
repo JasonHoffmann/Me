@@ -1,7 +1,4 @@
-import Vue from 'vue';
 import views from 'root/views';
-import store from 'root/stores/store';
-import {getNote, updateNote} from 'root/stores/actions';
 
 var Notes_Edit = Vue.extend({
 	template: views['notes/edit'],
