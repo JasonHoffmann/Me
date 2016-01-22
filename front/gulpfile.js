@@ -8,7 +8,8 @@ var vendorFiles = [
 	'app/vendor/vue.min.js',
 	'app/vendor/vue-router.min.js',
 	'app/vendor/vue-resource.min.js',
-	'app/vendor/lodash.min.js'
+	'app/vendor/lodash.min.js',
+    'app/vendor/backbone.js'
 ];
 
 gulp.task('vendor', function() {

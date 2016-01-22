@@ -62,8 +62,9 @@ class Me_API {
 	 */
 	public function add_endpoint_to_rest_api() {
 		$namespace = 'me/v1';
+		$enpdpoint = 'notes';
 
-		register_rest_route( $namespace, '/' . $this->endpoint . '/', array(
+		register_rest_route( $namespace, '/' . $endpoint . '/', array(
 			array(
 			    'methods' => WP_REST_Server::READABLE,
 			    'callback' => array( $this, 'endpoint_get_all' ),

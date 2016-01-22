@@ -3,7 +3,7 @@
 		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>
 	</div>
 
-	<section v-for="note in notes" class="nt-list">
+	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ 'active': note.active }">
 		<h3 class="nt-list-title">
 				{{ note.title }}
 		</h3>
@@ -12,6 +12,9 @@
 </aside>
 
 
-<div class="col-xs-8">
-	{{ active_note | json }}
+<div class="col-xs-8 nt-active-note">
+	<h2>{{ active_note.title }}</h2>
+	<div class="nt-content">
+		<textarea class="nt-textarea" value="{{ active_note.meta.markdown }}">
+	</div>
 </div>

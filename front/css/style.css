@@ -4,7 +4,7 @@
 	font-weight: 200;
 }
 
-#me-plugin h1, #me-plugin h2, #me-plugin h3, #me-plugin h4, #me-plugin h5, #me-plugin h6, #me-plugin input {
+#me-plugin h1, #me-plugin h2, #me-plugin h3, #me-plugin h4, #me-plugin h5, #me-plugin h6 {
 	font-family: 'Fira Sans', sans-serif;
 	font-weight: bold;
 }
@@ -85,7 +85,17 @@ h3 {
 }
 
 .nt-list {
-	margin-bottom: 25px;
+	padding: 0.5em;
+	margin: 0;
+	cursor: pointer;
+}
+
+.nt-list.active {
+	background: rgba(242, 242, 242, 0.5);
+}
+
+.nt-list:hover {
+	background: rgba(242, 242, 242, 0.5);
 }
 
 .nt-list-title {
@@ -99,4 +109,22 @@ h3 {
 
 .nt-list-excerpt *:first-child {
 	margin-top: 0;
+}
+
+.nt-active-note {
+	padding-left: 2em;
+}
+
+.nt-textarea {
+	width: 100%;
+	font-weight: 300;
+	border: none;
+	min-height: 100%;
+	padding: 20px 0;
+	font-size: 1em;
+}
+
+.nt-textarea:focus {
+	border-top: 3px solid #999;
+	outline: none;
 }

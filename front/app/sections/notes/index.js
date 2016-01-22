@@ -14,18 +14,15 @@ var Notes = Vue.extend({
 
 	created: function() {
 		noteStore.init();
-		activeNoteStore.init();
-	},
-
-	ready: function() {
-		noteStore.mutate();
 	},
 
 	methods : {
-		deleteNote : function(note) {
+		makeActive : function(note) {
+			noteStore.setActive(note);
 		},
 
 		newNote : function() {
+			noteStore.createNew()
 		}
 	}
 });

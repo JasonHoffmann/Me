@@ -6,19 +6,25 @@ var Sections = Vue.extend({
 
 	data: function(){
 		return {
-			sections: sectionStore.state.sections,
-			active_sections : sectionStore.state.active_sections,
-			string: 'string'
+			sections: sectionStore.state.sections
 		}
 	},
 
+	computed : {
+			active_sections : function() {
+				return _.filter(this.sections, function(o) {
+					return o.activated
+				})
+			}
+	},
+
 	ready: function() {
-		sectionStore.init();
+		sectionStore.getAll();
 	},
 
 	methods : {
 		clicked: function(e) {
-			e.preventDefault();
+			
 			console.log(sectionStore.state);
 		}
 	}

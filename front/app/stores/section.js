@@ -1,19 +1,23 @@
-import api from 'root/api/index'
+import api from 'root/api/index';
+
+var Section = {
+	activated : 'false',
+	name : '',
+	slug: ''
+};
 
 var sectionStore = {
-	state : {
+	state: {
 		sections : [],
-		active_sections : [],
 		api_called : false
 	},
 
-	init: function() {
-		if(!this.state.api_called) {
-			this.getAll();
-		}
-	},
-
 	getAll : function() {
+
+		if(this.api_called === true ) {
+			return;
+		}
+
 		this.api_called = true;
 
 
@@ -22,14 +26,6 @@ var sectionStore = {
 			_.each(data.data, function( section ) {
 				sectionStore.state.sections.push(section);
 			});
-
-			_.each(data.data, function( section ) {
-				if( section.activated ) {
-					sectionStore.state.active_sections.push(section);
-				}
-			});
-
-			
 
 		})
 	}
