@@ -12,7 +12,7 @@ export default {
 	},
 
 	edit_note : function(id, note) {
-		return Vue.http.patch(meVars.api_url + '/notes/' + id + '/', note);
+		return Vue.http.post(meVars.api_url + '/notes/' + id + '/', note);
 	},
 
 	add_note : function(note) {

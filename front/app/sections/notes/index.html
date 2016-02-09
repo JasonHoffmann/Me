@@ -7,14 +7,21 @@
 		<h3 class="nt-list-title">
 				{{ note.title }}
 		</h3>
-		<div class="nt-list-excerpt">{{{ note.content }}}</div>
+		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>
 	</section>
 </aside>
 
-
 <div class="col-xs-8 nt-active-note">
+	<div class="nt-single-actions">
+		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">
+			Save
+		</a>
+		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">
+			Trash
+		</a>
+	</div>
 	<h2>{{ active_note.title }}</h2>
 	<div class="nt-content">
-		<textarea class="nt-textarea" value="{{ active_note.meta.markdown }}">
+		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>
 	</div>
 </div>

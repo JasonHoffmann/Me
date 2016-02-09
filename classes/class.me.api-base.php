@@ -62,9 +62,8 @@ class Me_API {
 	 */
 	public function add_endpoint_to_rest_api() {
 		$namespace = 'me/v1';
-		$enpdpoint = 'notes';
 
-		register_rest_route( $namespace, '/' . $endpoint . '/', array(
+		register_rest_route( $namespace, '/' . $this->endpoint . '/', array(
 			array(
 			    'methods' => WP_REST_Server::READABLE,
 			    'callback' => array( $this, 'endpoint_get_all' ),
@@ -124,6 +123,7 @@ class Me_API {
 	                    'title' => $post->post_title,
 	                    'permalink' => get_permalink( $post->ID ),
 	                    'content' => apply_filters( 'the_content', $post->post_content ),
+	                    'excerpt' => wp_trim_words( $post->post_content, 20 ),
 	                    'meta' => $meta_fields
 	                );
 	            }
@@ -161,16 +161,27 @@ class Me_API {
 
 		foreach( $this->meta_fields as $meta ) {
 			if( isset( $request[$meta] ) ) {
-				update_post_meta($post_id, $request[$meta] );
+				update_post_meta($post_id, $meta, $request[$meta] );
 			}
 		}
 
-		$response = array(
-			'update' => 'true'
-			);
 
-		$response = rest_ensure_response( $response );
-		$response->set_status( 201 );
+		$post = get_post($post_id);
+
+		$meta_fields = array();
+		foreach( $this->meta_fields as $meta ) {
+			$meta_fields[$meta] = isset( $request[$meta] ) ? $request[$meta] : '';
+		}
+
+
+		$return = array(
+			'ID' => $post->ID,
+			'title' => $post->post_title,
+			'permalink' => get_permalink( $post->ID ),
+			'content' => apply_filters( 'the_content', $post->post_content ),
+			'meta' => $meta_fields
+		);
+		$response = new WP_REST_Response( $return );
 		return $response;
 	}
 
@@ -224,6 +235,7 @@ class Me_API {
 		$id = (int) $request['id'];
 
 		$post = get_post( $id );
+		
 
 		if ( isset( $request['title'] ) ) {
 			if ( is_string( $request['title'] ) ) {
@@ -237,9 +249,11 @@ class Me_API {
 			}
 		}
 
+		wp_update_post( $post );
+
 		foreach( $this->meta_fields as $meta ) {
 			if( isset( $request[$meta] ) ) {
-				update_post_meta($id, $request[$meta] );
+				update_post_meta($id, $meta, $request[$meta] );
 			}
 		}
 

@@ -13,6 +13,7 @@
 
 
 <?php wp_head(); ?>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <body id="me-plugin">
 	<div id="app">

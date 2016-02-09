@@ -27,7 +27,7 @@ var noteStore = {
 	getAll : function() {
 		this.api_called = true;
 
-		api.get_notes().then(function(data) {
+		return api.get_notes().then(function(data) {
 			var first = _.head(data.data);
 
 			_.each(data.data, function( note ) {
@@ -39,9 +39,15 @@ var noteStore = {
 				noteStore.state.notes.push(note);
 			});
 
-			noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
+			return noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
 
 		})
+	},
+
+	getNotes : function() {
+		this.api_called = true;
+
+		return api.get_notes();
 	},
 
 	setActive : function(note) {
@@ -58,18 +64,31 @@ var noteStore = {
 
 	createNew : function() {
 		var newStub = {
-			title : 'Note Title',
+			title : 'Untitled'
 		};
 
-		api.add_note(newStub).then(function(note) {
-			console.log(note);
-			console.log(note.data);
+		var newNote = api.add_note(newStub).then(function(note) {
+			noteStore.state.notes.unshift(note.data);
+			noteStore.setActive( note.data );
+			return note.data;
 		});
+	},
 
-		// TODO : MAKE PROPER REQUEST TO API AND RETURN THE ID
-		// noteStore.state.notes.push(newStub);
+	deleteNote : function( note ) {
+		var where = _.findIndex(this.state.notes, function(n) {
+			return n.ID === note.ID;
+		})
+		this.state.notes.splice(where, 1);
 
-		// this.state.active_note = _.assign(noteStore.state.active_note, newStub);
+		var first = _.head(this.state.notes);
+		noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
+		api.delete_note(note.ID);
+
+		return first;
+	},
+
+	saveNote : function(note) {
+		var newNote = api.edit_note(note.ID, note);
 	}
 }
 
