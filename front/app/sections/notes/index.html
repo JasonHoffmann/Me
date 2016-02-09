@@ -1,0 +1,27 @@
+<aside class="col-xs-4">
+	<div class="nt-add">
+		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>
+	</div>
+
+	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ 'active': note.active }">
+		<h3 class="nt-list-title">
+				{{ note.title }}
+		</h3>
+		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>
+	</section>
+</aside>
+
+<div class="col-xs-8 nt-active-note">
+	<div class="nt-single-actions">
+		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">
+			Save
+		</a>
+		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">
+			Trash
+		</a>
+	</div>
+	<h2>{{ active_note.title }}</h2>
+	<div class="nt-content">
+		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>
+	</div>
+</div>

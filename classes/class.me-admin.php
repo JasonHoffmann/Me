@@ -82,7 +82,7 @@ class Me_Admin {
 	 * 
 	 */
 	function create_admin_page() {
-		$modules = Me::get_all_modules();
+		$modules = Me_Utils::get_all_modules();
 
 		$activate_nonce = wp_create_nonce( 'me_module_activate' );
 		$deactivate_nonce = wp_create_nonce( 'me_module_deactivate' );
