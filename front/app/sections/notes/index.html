@@ -20,7 +20,7 @@
 			Trash
 		</a>
 	</div>
-	<h2>{{ active_note.title }}</h2>
+	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.title }}" /></h2>
 	<div class="nt-content">
 		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>
 	</div>

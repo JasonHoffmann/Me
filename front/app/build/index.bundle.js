@@ -99,7 +99,7 @@ $__System.registerDynamic("5", [], true, function($__require, exports, module) {
   module.exports = Object.create(null);
   module.exports['sections/index'] = '<ul v-for="item in active_sections" class="module-list">\n	<li class="module-list-item">\n		<a v-link="{ path: item.slug }" class="module-list-link btn js-module-link">{{ item.name }}</a>\n	</li>\n</ul>';
   module.exports['layout/layout'] = '<main class="container">\n	<div class="row">\n		<router-view></router-view>\n	</div>\n</main>';
-  module.exports['notes/index'] = '<aside class="col-xs-4">\n	<div class="nt-add">\n		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>\n	</div>\n\n	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ \'active\': note.active }">\n		<h3 class="nt-list-title">\n				{{ note.title }}\n		</h3>\n		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>\n	</section>\n</aside>\n\n<div class="col-xs-8 nt-active-note">\n	<div class="nt-single-actions">\n		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">\n			Save\n		</a>\n		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">\n			Trash\n		</a>\n	</div>\n	<h2>{{ active_note.title }}</h2>\n	<div class="nt-content">\n		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>\n	</div>\n</div>\n';
+  module.exports['notes/index'] = '<aside class="col-xs-4">\n	<div class="nt-add">\n		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>\n	</div>\n\n	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ \'active\': note.active }">\n		<h3 class="nt-list-title">\n				{{ note.title }}\n		</h3>\n		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>\n	</section>\n</aside>\n\n<div class="col-xs-8 nt-active-note">\n	<div class="nt-single-actions">\n		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">\n			Save\n		</a>\n		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">\n			Trash\n		</a>\n	</div>\n	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.title }}" /></h2>\n	<div class="nt-content">\n		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>\n	</div>\n</div>\n';
   global.define = __define;
   return module.exports;
 });
@@ -124,7 +124,9 @@ $__System.register('3', [], function (_export) {
 				},
 
 				edit_note: function edit_note(id, note) {
-					return Vue.http.post(meVars.api_url + '/notes/' + id + '/', note);
+					return Vue.http.post(meVars.api_url + '/notes/' + id + '/', note).then(function (data) {
+						return data;
+					});
 				},
 
 				add_note: function add_note(note) {
@@ -234,6 +236,13 @@ $__System.register('6', ['3'], function (_export) {
 
 				saveNote: function saveNote(note) {
 					var newNote = api.edit_note(note.ID, note);
+
+					newNote.then(function (data) {
+						var match = _.find(noteStore.state.notes, { ID: 48 }),
+						    index = _.indexOf(noteStore.state.notes, match);
+						_.merge(noteStore.state.active_note, data.data);
+						noteStore.state.notes.splice(index, 1, noteStore.state.active_note);
+					});
 				}
 			};
 
@@ -287,7 +296,9 @@ $__System.register('7', ['5', '6'], function (_export) {
 					},
 
 					saveNote: function saveNote() {
-						noteStore.saveNote({ 'ID': this.active_note.ID, 'markdown': simplemde.value() });
+						var title = document.getElementById('noteTitle').value;
+						noteStore.saveNote({ 'ID': this.active_note.ID, 'title': title, 'markdown': simplemde.value() });
+						this.notes = noteStore.state.notes;
 					}
 				}
 			});

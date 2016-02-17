@@ -89,6 +89,15 @@ var noteStore = {
 
 	saveNote : function(note) {
 		var newNote = api.edit_note(note.ID, note);
+
+		newNote.then(function(data) {
+			var match = _.find(noteStore.state.notes, {ID: 48}),
+				index = _.indexOf(noteStore.state.notes, match);
+			_.merge(noteStore.state.active_note, data.data);
+			noteStore.state.notes.splice(index, 1, noteStore.state.active_note);
+		})
+
+
 	}
 }
 

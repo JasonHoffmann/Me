@@ -38,7 +38,8 @@ class Me_API_Notes extends Me_API {
 			'ID' => $post->ID,
 			'title' => $post->post_title,
 			'permalink' => get_permalink( $post->ID ),
-			'content' => apply_filters( 'the_content', $post->post_content )
+			'content' => apply_filters( 'the_content', $post->post_content ),
+			'excerpt' => wp_trim_words( $post->post_content, 20 )
 		);
 		$response = new WP_REST_Response( $return );
 		return $response;
