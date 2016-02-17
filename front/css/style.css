@@ -171,6 +171,15 @@ h3 {
 	padding-left: 2em;
 }
 
+.nt-title {
+	border: none;
+	padding: 0.5em;
+	font-weight: bold;
+	font-size: 1em;
+	display: block;
+	width: 100%;
+}
+
 .nt-textarea {
 	width: 100%;
 	font-weight: 300;

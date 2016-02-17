@@ -36,7 +36,9 @@ var Notes = Vue.extend({
 		},
 
 		saveNote : function() {
-			noteStore.saveNote({ 'ID' : this.active_note.ID, 'markdown' : simplemde.value() });
+			var title = document.getElementById('noteTitle').value;
+			noteStore.saveNote({ 'ID' : this.active_note.ID, 'title' : title, 'markdown' : simplemde.value() });
+			this.notes = noteStore.state.notes;
 		}
 	}
 });
