@@ -7,38 +7,52 @@ var Notes = Vue.extend({
 
 	route : {
 		data : function(transition) {
-			return noteStore.getAll().then(function(data) {
-				simplemde = new SimpleMDE({ element : document.getElementById('nt-textarea')});
+			var notes = noteStore.fetch({
+				success: function(data) {
+					noteStore.setSelected();
+				}
 			});
+			notes.then(function() {
+				simplemde = new SimpleMDE({ element : document.getElementById('nt-textarea')});
+			})
  		}
  	},
 
 	data : function() {
 		return {
-			notes : noteStore.state.notes,
-			active_note : noteStore.state.active_note
+			notes : noteStore
 		}	
+	},
+
+	computed : {
+			active_note : function() {
+				return noteStore.selected()
+			}
 	},
 	
 	methods : {
 		makeActive : function(note) {
-			noteStore.setActive(note);
-			simplemde.value(note.meta.markdown);
+			noteStore.setSelected(note);
+			simplemde.value(note.get('meta').markdown);
 		},
 
 		newNote : function() {
-			noteStore.createNew()
+			// var newNote = noteStore.create({title: 'NEW TITLE FOR A THING'}, {wait: true});
+			// noteStore.push(newNote);
+			noteStore.set([{title: 'NEW TITLE'}]);
 		},
 
 		deleteNote : function(note) {
-			var newNote = noteStore.deleteNote(note);
-			simplemde.value( newNote.meta.markdown );
+			var currentNote = this.active_note;
+			currentNote.destroy();
+			noteStore.setSelected();
 		},
 
 		saveNote : function() {
+			var currentNote = this.active_note;
 			var title = document.getElementById('noteTitle').value;
-			noteStore.saveNote({ 'ID' : this.active_note.ID, 'title' : title, 'markdown' : simplemde.value() });
-			this.notes = noteStore.state.notes;
+			currentNote.set({ title: title, 'markdown' : simplemde.value() });
+			currentNote.save();
 		}
 	}
 });

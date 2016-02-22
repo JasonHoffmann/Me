@@ -69,7 +69,7 @@ class Me_API {
 			    'callback' => array( $this, 'endpoint_get_all' ),
 			),
 			array(
-				'methods' => WP_REST_Server::CREATABLE,
+				'methods' => array('PUT'),
 				'callback' => array( $this, 'endpoint_create_single' )
 			)
 		));

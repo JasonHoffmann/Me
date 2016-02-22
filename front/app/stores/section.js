@@ -1,34 +1,20 @@
-import api from 'root/api/index';
-
-var Section = {
-	activated : 'false',
-	name : '',
-	slug: ''
-};
-
-var sectionStore = {
-	state: {
-		sections : [],
-		api_called : false
-	},
-
-	getAll : function() {
-
-		if(this.api_called === true ) {
-			return;
-		}
-
-		this.api_called = true;
-
-
-		api.get_sections().then(function(data) {
-
-			_.each(data.data, function( section ) {
-				sectionStore.state.sections.push(section);
-			});
-
-		})
+var Section = Backbone.Model.extend({
+	defaults : {
+		activated : 'false',
+		name : '',
+		slug: ''
 	}
-}
+});
+
+var SectionCollection = Backbone.Collection.extend({
+	model: Section,
+	url: 'http://slash-me.dev/wp-json/me/v1/modules',
+	active: function(section) {
+		var filtered = this.where({activated : true});
+		return new SectionCollection(filtered);
+	}
+});
+
+var sectionStore = new SectionCollection({});
 
 export default sectionStore;

@@ -3,57 +3,44 @@
 (["1"], [], function($__System) {
 
 !function(){var t=$__System;if("undefined"!=typeof window&&"undefined"!=typeof document&&window.location)var s=location.protocol+"//"+location.hostname+(location.port?":"+location.port:"");t.set("@@cjs-helpers",t.newModule({getPathVars:function(t){var n,o=t.lastIndexOf("!");n=-1!=o?t.substr(0,o):t;var e=n.split("/");return e.pop(),e=e.join("/"),"file:///"==n.substr(0,8)?(n=n.substr(7),e=e.substr(7),isWindows&&(n=n.substr(1),e=e.substr(1))):s&&n.substr(0,s.length)===s&&(n=n.substr(s.length),e=e.substr(s.length)),{filename:n,dirname:e}}}))}();
-$__System.register('2', ['3'], function (_export) {
+$__System.register('2', [], function (_export) {
 	'use strict';
 
-	var api, Section, sectionStore;
+	var Section, SectionCollection, sectionStore;
 	return {
-		setters: [function (_2) {
-			api = _2['default'];
-		}],
+		setters: [],
 		execute: function () {
-			Section = {
-				activated: 'false',
-				name: '',
-				slug: ''
-			};
-			sectionStore = {
-				state: {
-					sections: [],
-					api_called: false
-				},
-
-				getAll: function getAll() {
-
-					if (this.api_called === true) {
-						return;
-					}
-
-					this.api_called = true;
-
-					api.get_sections().then(function (data) {
-
-						_.each(data.data, function (section) {
-							sectionStore.state.sections.push(section);
-						});
-					});
+			Section = Backbone.Model.extend({
+				defaults: {
+					activated: 'false',
+					name: '',
+					slug: ''
 				}
-			};
+			});
+			SectionCollection = Backbone.Collection.extend({
+				model: Section,
+				url: 'http://slash-me.dev/wp-json/me/v1/modules',
+				active: function active(section) {
+					var filtered = this.where({ activated: true });
+					return new SectionCollection(filtered);
+				}
+			});
+			sectionStore = new SectionCollection({});
 
 			_export('default', sectionStore);
 		}
 	};
 });
 
-$__System.register('4', ['2', '5'], function (_export) {
+$__System.register('3', ['2', '4'], function (_export) {
 	'use strict';
 
 	var sectionStore, views, Sections;
 	return {
-		setters: [function (_3) {
-			sectionStore = _3['default'];
-		}, function (_2) {
-			views = _2['default'];
+		setters: [function (_2) {
+			sectionStore = _2['default'];
+		}, function (_) {
+			views = _['default'];
 		}],
 		execute: function () {
 			Sections = Vue.extend({
@@ -61,20 +48,18 @@ $__System.register('4', ['2', '5'], function (_export) {
 
 				data: function data() {
 					return {
-						sections: sectionStore.state.sections
+						sections: sectionStore
 					};
 				},
 
 				computed: {
 					active_sections: function active_sections() {
-						return _.filter(this.sections, function (o) {
-							return o.activated;
-						});
+						return sectionStore.active();
 					}
 				},
 
-				ready: function ready() {
-					sectionStore.getAll();
+				created: function created() {
+					var fetched = sectionStore.fetch();
 				},
 
 				methods: {
@@ -90,168 +75,173 @@ $__System.register('4', ['2', '5'], function (_export) {
 	};
 });
 
-$__System.registerDynamic("5", [], true, function($__require, exports, module) {
+$__System.registerDynamic("4", [], true, function($__require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   'format cjs';
   module.exports = Object.create(null);
-  module.exports['sections/index'] = '<ul v-for="item in active_sections" class="module-list">\n	<li class="module-list-item">\n		<a v-link="{ path: item.slug }" class="module-list-link btn js-module-link">{{ item.name }}</a>\n	</li>\n</ul>';
+  module.exports['sections/index'] = '<ul v-for="item in active_sections.models" class="module-list">\n	<li class="module-list-item">\n		<a v-link="{ path: item.get(\'slug\') }" class="module-list-link btn js-module-link">{{ item.get(\'name\') }}</a>\n	</li>\n</ul>';
   module.exports['layout/layout'] = '<main class="container">\n	<div class="row">\n		<router-view></router-view>\n	</div>\n</main>';
-  module.exports['notes/index'] = '<aside class="col-xs-4">\n	<div class="nt-add">\n		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>\n	</div>\n\n	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ \'active\': note.active }">\n		<h3 class="nt-list-title">\n				{{ note.title }}\n		</h3>\n		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>\n	</section>\n</aside>\n\n<div class="col-xs-8 nt-active-note">\n	<div class="nt-single-actions">\n		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">\n			Save\n		</a>\n		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">\n			Trash\n		</a>\n	</div>\n	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.title }}" /></h2>\n	<div class="nt-content">\n		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>\n	</div>\n</div>\n';
+  module.exports['notes/index'] = '<aside class="col-xs-4">\n	<div class="nt-add">\n		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>\n	</div>\n\n	<section v-for="note in notes.models" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ \'active\': note.get(\'active\') }">\n		<h3 class="nt-list-title">\n				{{ note.get(\'title\') }}\n		</h3>\n		<div class="nt-list-excerpt">{{{ note.get(\'excerpt\') }}}</div>\n	</section>\n</aside>\n\n<div class="col-xs-8 nt-active-note">\n	<div class="nt-single-actions">\n		<a href="#" v-on:click.prevent="saveNote()" class="nt-save-btn btn">\n			Save\n		</a>\n		<a href="#" v-on:click.prevent="deleteNote(active_note)" class="nt-delete-btn btn">\n			Trash\n		</a>\n	</div>\n	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.get(\'title\') }}" /></h2>\n	<div class="nt-content">\n		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.get(\'meta\').markdown }}</textarea>\n	</div>\n</div>\n';
   global.define = __define;
   return module.exports;
 });
 
-$__System.register('3', [], function (_export) {
+$__System.register('5', [], function (_export) {
+	// import api from 'root/api/index';
+
+	// var stub = {
+	// 	ID : '',
+	// 	title : 'New Title',
+	// 	content : '',
+	// 	meta : {
+	// 		markdown : ''
+	// 	}
+	// };
+
+	// var noteStore = {
+
+	// 	state : {
+	// 		active_note : stub,
+	// 		notes : [],
+	// 		api_called : false,
+	// 	},
+
+	// 	init: function() {
+	// 		if(!this.state.api_called) {
+	// 			this.getAll();
+	// 		}
+	// 	},
+
+	// 	getAll : function() {
+	// 		this.api_called = true;
+
+	// 		return api.get_notes().then(function(data) {
+	// 			var first = _.head(data.data);
+
+	// 			_.each(data.data, function( note ) {
+	// 				if( first === note) {
+	// 					note.active = true;
+	// 				} else {
+	// 					note.active = false;
+	// 				}
+	// 				noteStore.state.notes.push(note);
+	// 			});
+
+	// 			return noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
+
+	// 		})
+	// 	},
+
+	// 	getNotes : function() {
+	// 		this.api_called = true;
+
+	// 		return api.get_notes();
+	// 	},
+
+	// 	setActive : function(note) {
+	// 		this.state.active_note = _.assign(noteStore.state.active_note, note);
+
+	// 		_.each(this.state.notes, function( n ) {
+	// 			if(n.ID === note.ID) {
+	// 				n.active = true;
+	// 			} else {
+	// 				n.active = false;
+	// 			}
+	// 		});
+	// 	},
+
+	// 	createNew : function() {
+	// 		var newStub = {
+	// 			title : 'Untitled'
+	// 		};
+
+	// 		var newNote = api.add_note(newStub).then(function(note) {
+	// 			noteStore.state.notes.unshift(note.data);
+	// 			noteStore.setActive( note.data );
+	// 			return note.data;
+	// 		});
+	// 	},
+
+	// 	deleteNote : function( note ) {
+	// 		var where = _.findIndex(this.state.notes, function(n) {
+	// 			return n.ID === note.ID;
+	// 		})
+	// 		this.state.notes.splice(where, 1);
+
+	// 		var first = _.head(this.state.notes);
+	// 		noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
+	// 		api.delete_note(note.ID);
+
+	// 		return first;
+	// 	},
+
+	// 	saveNote : function(note) {
+	// 		var newNote = api.edit_note(note.ID, note);
+
+	// 		newNote.then(function(data) {
+	// 			var match = _.find(noteStore.state.notes, {ID: 48}),
+	// 				index = _.indexOf(noteStore.state.notes, match);
+	// 			_.merge(noteStore.state.active_note, data.data);
+	// 			noteStore.state.notes.splice(index, 1, noteStore.state.active_note);
+	// 		})
+
+	// 	}
+	// }
+
+	// export default noteStore;
+
 	'use strict';
 
+	var Note, NoteCollection, noteStore;
 	return {
 		setters: [],
 		execute: function () {
-			_export('default', {
-				get_notes: function get_notes() {
-					return Vue.http.get(meVars.api_url + '/notes');
+			Note = Backbone.Model.extend({
+				defaults: {
+					ID: '',
+					title: '',
+					content: '',
+					meta: {
+						markdown: ''
+					},
+					active: false
+				},
+				idAttribute: 'ID'
+			});
+			NoteCollection = Backbone.Collection.extend({
+				model: Note,
+				url: 'http://slash-me.dev/wp-json/me/v1/notes',
+
+				selected: function selected(note) {
+					var thing = this.where({ active: true })[0];
+					return thing;
 				},
 
-				get_note: function get_note(id) {
-					return Vue.http.get(meVars.api_url + '/notes/' + id + '/');
+				setSelected: function setSelected(note) {
+					this.deselect();
+					note = note || this.first();
+					note.set({ active: true });
 				},
 
-				get_sections: function get_sections() {
-					return Vue.http.get(meVars.api_url + '/modules');
-				},
-
-				edit_note: function edit_note(id, note) {
-					return Vue.http.post(meVars.api_url + '/notes/' + id + '/', note).then(function (data) {
-						return data;
-					});
-				},
-
-				add_note: function add_note(note) {
-					return Vue.http.post(meVars.api_url + '/notes/', note);
-				},
-
-				delete_note: function delete_note(id) {
-					return Vue.http['delete'](meVars.api_url + '/notes/' + id + '/');
+				deselect: function deselect(note) {
+					if (!this.selected()) {
+						return;
+					}
+					note = note || this.selected();
+					note.set({ active: false });
 				}
 			});
-		}
-	};
-});
-
-$__System.register('6', ['3'], function (_export) {
-	'use strict';
-
-	var api, stub, noteStore;
-	return {
-		setters: [function (_2) {
-			api = _2['default'];
-		}],
-		execute: function () {
-			stub = {
-				ID: '',
-				title: 'New Title',
-				content: '',
-				meta: {
-					markdown: ''
-				}
-			};
-			noteStore = {
-
-				state: {
-					active_note: stub,
-					notes: [],
-					api_called: false
-				},
-
-				init: function init() {
-					if (!this.state.api_called) {
-						this.getAll();
-					}
-				},
-
-				getAll: function getAll() {
-					this.api_called = true;
-
-					return api.get_notes().then(function (data) {
-						var first = _.head(data.data);
-
-						_.each(data.data, function (note) {
-							if (first === note) {
-								note.active = true;
-							} else {
-								note.active = false;
-							}
-							noteStore.state.notes.push(note);
-						});
-
-						return noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
-					});
-				},
-
-				getNotes: function getNotes() {
-					this.api_called = true;
-
-					return api.get_notes();
-				},
-
-				setActive: function setActive(note) {
-					this.state.active_note = _.assign(noteStore.state.active_note, note);
-
-					_.each(this.state.notes, function (n) {
-						if (n.ID === note.ID) {
-							n.active = true;
-						} else {
-							n.active = false;
-						}
-					});
-				},
-
-				createNew: function createNew() {
-					var newStub = {
-						title: 'Untitled'
-					};
-
-					var newNote = api.add_note(newStub).then(function (note) {
-						noteStore.state.notes.unshift(note.data);
-						noteStore.setActive(note.data);
-						return note.data;
-					});
-				},
-
-				deleteNote: function deleteNote(note) {
-					var where = _.findIndex(this.state.notes, function (n) {
-						return n.ID === note.ID;
-					});
-					this.state.notes.splice(where, 1);
-
-					var first = _.head(this.state.notes);
-					noteStore.state.active_note = _.assign(noteStore.state.active_note, first);
-					api.delete_note(note.ID);
-
-					return first;
-				},
-
-				saveNote: function saveNote(note) {
-					var newNote = api.edit_note(note.ID, note);
-
-					newNote.then(function (data) {
-						var match = _.find(noteStore.state.notes, { ID: 48 }),
-						    index = _.indexOf(noteStore.state.notes, match);
-						_.merge(noteStore.state.active_note, data.data);
-						noteStore.state.notes.splice(index, 1, noteStore.state.active_note);
-					});
-				}
-			};
+			noteStore = new NoteCollection({});
 
 			_export('default', noteStore);
 		}
 	};
 });
 
-$__System.register('7', ['5', '6'], function (_export) {
+$__System.register('6', ['4', '5'], function (_export) {
 	'use strict';
 
 	var views, noteStore, simplemde, Notes;
@@ -267,7 +257,12 @@ $__System.register('7', ['5', '6'], function (_export) {
 
 				route: {
 					data: function data(transition) {
-						return noteStore.getAll().then(function (data) {
+						var notes = noteStore.fetch({
+							success: function success(data) {
+								noteStore.setSelected();
+							}
+						});
+						notes.then(function () {
 							simplemde = new SimpleMDE({ element: document.getElementById('nt-textarea') });
 						});
 					}
@@ -275,30 +270,39 @@ $__System.register('7', ['5', '6'], function (_export) {
 
 				data: function data() {
 					return {
-						notes: noteStore.state.notes,
-						active_note: noteStore.state.active_note
+						notes: noteStore
 					};
+				},
+
+				computed: {
+					active_note: function active_note() {
+						return noteStore.selected();
+					}
 				},
 
 				methods: {
 					makeActive: function makeActive(note) {
-						noteStore.setActive(note);
-						simplemde.value(note.meta.markdown);
+						noteStore.setSelected(note);
+						simplemde.value(note.get('meta').markdown);
 					},
 
 					newNote: function newNote() {
-						noteStore.createNew();
+						// var newNote = noteStore.create({title: 'NEW TITLE FOR A THING'}, {wait: true});
+						// noteStore.push(newNote);
+						noteStore.set([{ title: 'NEW TITLE' }]);
 					},
 
 					deleteNote: function deleteNote(note) {
-						var newNote = noteStore.deleteNote(note);
-						simplemde.value(newNote.meta.markdown);
+						var currentNote = this.active_note;
+						currentNote.destroy();
+						noteStore.setSelected();
 					},
 
 					saveNote: function saveNote() {
+						var currentNote = this.active_note;
 						var title = document.getElementById('noteTitle').value;
-						noteStore.saveNote({ 'ID': this.active_note.ID, 'title': title, 'markdown': simplemde.value() });
-						this.notes = noteStore.state.notes;
+						currentNote.set({ title: title, 'markdown': simplemde.value() });
+						currentNote.save();
 					}
 				}
 			});
@@ -308,7 +312,7 @@ $__System.register('7', ['5', '6'], function (_export) {
 	};
 });
 
-$__System.register('8', ['4', '7'], function (_export) {
+$__System.register('7', ['3', '6'], function (_export) {
     'use strict';
 
     var Sections, Notes, router;
@@ -338,26 +342,69 @@ $__System.register('8', ['4', '7'], function (_export) {
     };
 });
 
-$__System.register('1', ['5', '8'], function (_export) {
-	'use strict';
+$__System.register('1', ['4', '7'], function (_export) {
+  'use strict';
 
-	var views, router, App;
-	return {
-		setters: [function (_) {
-			views = _['default'];
-		}, function (_2) {
-			router = _2['default'];
-		}],
-		execute: function () {
-			App = Vue.extend({
-				template: views['layout/layout']
-			});
+  var views, router, App, defaults, stringifyGETParams, status, json;
+  return {
+    setters: [function (_) {
+      views = _['default'];
+    }, function (_2) {
+      router = _2['default'];
+    }],
+    execute: function () {
+      App = Vue.extend({
+        template: views['layout/layout']
+      });
 
-			Vue.use(VueResource);
+      Vue.config.debug = true;
 
-			router.start(App, '#app');
-		}
-	};
+      defaults = function defaults(obj, source) {
+        for (var prop in source) {
+          if (obj[prop] === undefined) obj[prop] = source[prop];
+        }
+        return obj;
+      };
+
+      stringifyGETParams = function stringifyGETParams(url, data) {
+        var query = '';
+        for (var key in data) {
+          if (data[key] == null) continue;
+          query += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+        }
+        if (query) url += (~url.indexOf('?') ? '&' : '?') + query.substring(1);
+        return url;
+      };
+
+      status = function status(response) {
+        if (response.status >= 200 && response.status < 300) {
+          return response;
+        }
+        throw new Error(response.statusText);
+      };
+
+      json = function json(response) {
+        return response.json();
+      };
+
+      Backbone.ajax = function (options) {
+        if (options.type === 'GET' && typeof options.data === 'object') {
+          options.url = stringifyGETParams(options.url, options.data);
+        }
+
+        return fetch(options.url, defaults(options, {
+          method: options.type,
+          headers: defaults(options.headers || {}, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }),
+          body: options.data
+        })).then(status).then(json).then(options.success)['catch'](options.error);
+      };
+
+      router.start(App, '#app');
+    }
+  };
 });
 
 })

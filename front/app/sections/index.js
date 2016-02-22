@@ -6,20 +6,18 @@ var Sections = Vue.extend({
 
 	data: function(){
 		return {
-			sections: sectionStore.state.sections
+			sections: sectionStore
 		}
 	},
 
 	computed : {
 			active_sections : function() {
-				return _.filter(this.sections, function(o) {
-					return o.activated
-				})
+				return sectionStore.active();
 			}
 	},
 
-	ready: function() {
-		sectionStore.getAll();
+	created: function() {
+		var fetched = sectionStore.fetch();
 	},
 
 	methods : {

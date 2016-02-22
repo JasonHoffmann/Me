@@ -5,9 +5,11 @@ var htmlToJs = require('gulp-html-to-js');
 var jspm = require('gulp-jspm');
 
 var vendorFiles = [
+    'app/vendor/fetch.js',
+    'app/vendor/underscore.min.js',
+    'app/vendor/backbone.min.js',
 	'app/vendor/vue.min.js',
 	'app/vendor/vue-router.min.js',
-	'app/vendor/vue-resource.min.js',
 	'app/vendor/lodash.min.js',
     'app/vendor/simplemde.min.js'
 ];

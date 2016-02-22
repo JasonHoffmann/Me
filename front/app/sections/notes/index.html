@@ -3,11 +3,11 @@
 		<button href="#new" v-on:click.prevent="newNote" class="nt-add-btn">+ New Note</button>
 	</div>
 
-	<section v-for="note in notes" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ 'active': note.active }">
+	<section v-for="note in notes.models" class="nt-list" v-on:click.prevent="makeActive(note)" v-bind:class="{ 'active': note.get('active') }">
 		<h3 class="nt-list-title">
-				{{ note.title }}
+				{{ note.get('title') }}
 		</h3>
-		<div class="nt-list-excerpt">{{{ note.excerpt }}}</div>
+		<div class="nt-list-excerpt">{{{ note.get('excerpt') }}}</div>
 	</section>
 </aside>
 
@@ -20,8 +20,8 @@
 			Trash
 		</a>
 	</div>
-	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.title }}" /></h2>
+	<h2><input id="noteTitle" class="nt-title" type="text" value="{{ active_note.get('title') }}" /></h2>
 	<div class="nt-content">
-		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.meta.markdown }}</textarea>
+		<textarea v-model="active_note.content" id="nt-textarea">{{ active_note.get('meta').markdown }}</textarea>
 	</div>
 </div>
